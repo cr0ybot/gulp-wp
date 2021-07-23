@@ -40,6 +40,7 @@
 		"resolve-bin": "^0.4.1"
 	},
 	"devDependencies": {
-		"@wordpress/prettier-config": "^1.1.0"
+		"@wordpress/prettier-config": "^1.1.0",
+		"prettier": "npm:wp-prettier@^2.2.1-beta-1"
 	}
 }
