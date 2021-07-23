@@ -1,0 +1,42 @@
+{
+	"name": "@b.d/gulp-wp",
+	"version": "0.1.0",
+	"description": "A reusable, extendable, updatable Gulp workflow for WordPress themes & plugins",
+	"author": {
+		"name": "Blackbird Digital",
+		"url": "https://blackbird.digital"
+	},
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/BlackbirdDigital/gulp-wp/issues"
+	},
+	"homepage": "https://github.com/BlackbirdDigital/gulp-wp#readme",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/BlackbirdDigital/gulp-wp.git"
+	},
+	"keywords": [
+		"wordpress",
+		"theme",
+		"gulp",
+		"workflow",
+		"webpack",
+		"babel",
+		"es6",
+		"sass",
+		"postcss",
+		"browsersync"
+	],
+	"engines": {
+		"node": ">=14.6.0",
+		"npm": ">=7.0.0"
+	},
+	"main": "gulpfile.js",
+	"scripts": {},
+	"dependencies": {
+		"cross-spawn": "^7.0.3",
+		"dotenv": "^10.0.0",
+		"gulp": "^4.0.2",
+		"resolve-bin": "^0.4.1"
+	}
+}
