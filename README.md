@@ -45,21 +45,37 @@ npm install --save-dev @b.d/gulp-wp
 You can start running the workflow immediately with this command in your project folder:
 
 ```shell
-gulp-wp
+npx gulp-wp
 ```
 
 This will run the default task, which watches and compiles your files and runs BrowserSync.
+
+If you'd prefer, you can canonize the tasks as npm scripts in your project's `package.json`:
+
+```json
+{
+	...
+
+	"scripts": {
+		"start": "gulp-wp",
+		"build": "gulp-wp build",
+		...
+	}
+}
+```
+
+The above allows you to run the default task via `npm start` and the build task via `npm run build`.
 
 #### Tasks
 
 There are several tasks available for individual aspects of development. Generally speaking, you probably shouldn't need to run them individually, since they are run as needed during the `watch` and `build` tasks.
 
-Running a task in your project is as simple as calling `gulp-wp foo` where "foo" is the task name:
+Running a task in your project is as simple as calling `npx gulp-wp foo` where "foo" is the task name:
 
 Task | Description
 -----|------------
+`watch` | Default task that runs when no task is specified. Runs everything that `build` does, but also watches your files for changes and sends real-time updates via BrowserSync to your browser.
 `build` | Runs all of the various tasks to build your project for deployment.
-`watch` | Runs everything that `build` does, but also watches your files for changes and sends real-time updates via BrowserSync to your browser.
 `scripts` | Runs `@wordpress/scripts` to package your JavaScript and generate asset files with a version hash and dependency array.
 `styles` | Compiles your Sass or Post CSS.
 `translate` | Runs `wp-pot` to create translation files.
