@@ -6,4 +6,5 @@ root = true
 charset = utf-8
 indent_style = tab
 insert_final_newline = true
+quote_type = single
 trim_trailing_whitespace = true
