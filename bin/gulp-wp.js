@@ -1,8 +1,7 @@
 #!/usr/bin/env node
 
-const pkgUp = require( 'pkg-up' ).sync;
-const resolveBin = require( 'resolve-bin' ).sync;
-const spawn = require( 'cross-spawn' ).sync;
+const { sync: resolveBin } = require( 'resolve-bin' );
+const { sync: spawn } = require( 'cross-spawn' );
 
 const { argv, cwd, exit } = process;
 
