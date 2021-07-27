@@ -4,7 +4,42 @@
 
 const { readdirSync } = require( 'fs' );
 const { basename, extname, join } = require( 'path' );
+const log = require( 'fancy-log' );
+const plumber = require( 'gulp-plumber' );
+const print = require( 'gulp-print' ).default;
+const subpipe = require( 'subpipe' );
 
+/**
+ * Handle stream errors without stopping the entire workflow.
+ *
+ * @function
+ * @returns {plumber}
+ */
+const handleStreamError = () => {
+	return plumber( {
+		errorHandler: function ( err ) {
+			console.error( err );
+			this.emit( 'end' );
+		},
+	} );
+};
+
+/**
+ * Stop handling stream errors.
+ *
+ * @function
+ * @returns {function}
+ */
+handleStreamError.stop = () => {
+	return plumber.stop();
+};
+
+/**
+ * Load predefined tasks.
+ *
+ * @function
+ * @returns {object} Tasks object
+ */
 const loadTasks = () =>
 	readdirSync( join( __dirname, '..', 'tasks' ) )
 		.filter( ( file ) => extname( file ) === '.js' )
@@ -14,6 +49,20 @@ const loadTasks = () =>
 			return acc;
 		}, {} );
 
+/**
+ * Logs files in the stream with a title.
+ *
+ * @function
+ * @returns {stream}
+ */
+const logEntries = ( title = 'Entries:' ) => {
+	log( title );
+
+	return subpipe( ( stream ) => stream.pipe( print() ) );
+};
+
 module.exports = {
+	handleStreamError,
 	loadTasks,
+	logEntries,
 };
