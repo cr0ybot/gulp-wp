@@ -18,7 +18,7 @@ module.exports = ( { src = 'src/styles/*.*', dest = 'dist/css' } = {} ) => {
 		const sassFilter = filter( '*.s[a|c]ss', { restore: true } );
 		return gulp
 			.src( src, { sourcemaps: true } )
-			.pipe( handleStreamError() )
+			.pipe( handleStreamError( 'styles' ) )
 			.pipe( logEntries( 'Style entries:' ) )
 			.pipe( sassFilter )
 			.pipe( sassGlob() )

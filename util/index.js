@@ -5,6 +5,7 @@
 const { readdirSync } = require( 'fs' );
 const { basename, extname, join } = require( 'path' );
 const log = require( 'fancy-log' );
+const notify = require( 'gulp-notify' );
 const plumber = require( 'gulp-plumber' );
 const print = require( 'gulp-print' ).default;
 const subpipe = require( 'subpipe' );
@@ -15,12 +16,12 @@ const subpipe = require( 'subpipe' );
  * @function
  * @returns {plumber}
  */
-const handleStreamError = () => {
+const handleStreamError = ( task ) => {
 	return plumber( {
-		errorHandler: function ( err ) {
-			console.error( err );
-			this.emit( 'end' );
-		},
+		errorHandler: notify.onError( {
+			title: `Error in '${ task }' task`,
+			sound: true,
+		} ),
 	} );
 };
 
