@@ -29,6 +29,7 @@ module.exports = ( gulp ) => {
 	// Register our custom registry
 	gulp.registry( registry( tasks ) );
 
+	// TODO: Is this useful? How to easily reuse/compose tasks?
 	return {
 		tasks,
 	};
