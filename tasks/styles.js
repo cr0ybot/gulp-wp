@@ -23,9 +23,9 @@ module.exports = ( { src = 'src/styles/*.*', dest = 'dist/css' } = {} ) => {
 			.pipe( sassFilter )
 			.pipe( sassGlob() )
 			.pipe(
-				sass( {
+				sass.sync( {
 					includePaths: [ 'node_modules' ],
-					errLogToConsole: true,
+					indentType: 'tab',
 					outputStype: 'expanded',
 				} )
 			)

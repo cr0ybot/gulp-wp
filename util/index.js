@@ -4,24 +4,45 @@
 
 const { readdirSync } = require( 'fs' );
 const { basename, extname, join } = require( 'path' );
+const c = require( 'ansi-colors' );
 const log = require( 'fancy-log' );
 const notify = require( 'gulp-notify' );
 const plumber = require( 'gulp-plumber' );
 const print = require( 'gulp-print' ).default;
 const subpipe = require( 'subpipe' );
 
+c.enabled = require( 'color-support' ).hasBasic;
+notify.logLevel( 0 );
+
 /**
  * Handle stream errors without stopping the entire workflow.
  *
  * @function
- * @returns {plumber}
+ * @returns {stream}
  */
 const handleStreamError = ( task ) => {
 	return plumber( {
-		errorHandler: notify.onError( {
-			title: `Error in '${ task }' task`,
-			sound: true,
-		} ),
+		// NOTE: can't be arrow function
+		errorHandler: function ( err ) {
+			// Separate simplifier message for notification
+			let notifyErr = err;
+
+			// Checks for PluginError object and reformats
+			if ( err.plugin && err.name && err.message ) {
+				notifyErr = err.message;
+				err = `${ c.red( err.name ) } in plugin "${ c.cyan(
+					err.plugin
+				) }"\n${ c.red( err.message ) }`;
+			}
+
+			log.error( err );
+			notify( {
+				title: `Error in '${ task }' task`,
+				sound: process.env.NOTIFY || true,
+			} ).write( notifyErr );
+
+			this.emit( 'end' );
+		},
 	} );
 };
 

@@ -109,34 +109,21 @@ BROWSERSYNC_BROWSER="['firefox', 'google chrome']"
 BROWSERSYNC_NOTIFY=true
 ```
 
+Note that you can also set other environment variables for tools used by this workflow. For instance, you can set `DISABLE_NOTIFIER=true` to turn off `gulp-notify` instead of using the `NOTIFY` option.
+
 ## Customization
 
-So, you've installed `gulp-wp` and it's working well for you, except you'd rather it did one of the tasks a little differently, like using a different source folder for script files, or maybe you need to add your own task and want it to run with the standard `watch` and `build` tasks.
+So, you've installed `gulp-wp` and it's working well for you, except you'd rather it did one of the tasks a little differently, like adding your own task to run with the standard `watch` and `build` tasks.
 
-Instead of running `gulp-wp` directly, you can instead add your own `gulpfile.js` in the root of your project and `require()` this module, then export all of it's tasks as your own:
+Instead of running `gulp-wp` directly, you can instead add your own `gulpfile.js` in the root of your project and `require()` this module, then export your custom tasks and even modify ones provided by `gulp-wp`:
 
 ```javascript
 const gulpWP = require('@b.d/gulp-wp');
 
-module.exports = gulpWP;
+// TODO: sort this out
 ```
 
-Now, instead of running `gulp-wp`, you can run `gulp` directly (as long as you've also installed the [gulp-cli package](https://www.npmjs.com/package/gulp-cli) globally, otherwise you can run `npx gulp`). Of course, now you're just using standard `gulp-wp` with extra steps.
-
-```javascript
-const { series } = require('gulp');
-const gulpWP = require('@b.d/gulp-wp');
-
-const foo = (done) => {
-	// do work here
-	done();
-}
-
-module.exports = {
-	...gulpWP,
-	build: series( ...gulpWP.build.tasks, foo ),
-};
-```
+Now, instead of running `gulp-wp`, you can run `gulp` directly (as long as you've also installed the [gulp-cli package](https://www.npmjs.com/package/gulp-cli) globally, otherwise you can run `npx gulp`).
 
 ## Rationale
 

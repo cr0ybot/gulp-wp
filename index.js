@@ -2,12 +2,15 @@
  * Gulp WP
  */
 
+// Load .env file
+const env = require( 'dotenv' ).config();
+if ( process.env.NOTIFY === 'false' ) {
+	process.env.DISABLE_NOTIFIER = true;
+}
+
 const registry = require( './lib/registry' );
 
 const { loadTasks } = require( './util' );
-
-// Load .env file
-require( 'dotenv' ).config();
 
 module.exports = ( gulp ) => {
 	const tasks = loadTasks();
