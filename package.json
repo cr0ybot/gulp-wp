@@ -31,7 +31,7 @@
 		"node": ">=14.6.0",
 		"npm": ">=7.0.0"
 	},
-	"main": "gulpfile.js",
+	"main": "index.js",
 	"bin": {
 		"gulp-wp": "./bin/gulp-wp.js"
 	},
@@ -40,10 +40,18 @@
 		"cross-spawn": "^7.0.3",
 		"dotenv": "^10.0.0",
 		"gulp": "^4.0.2",
-		"resolve-bin": "^0.4.1"
+		"gulp-plumber": "^1.2.1",
+		"gulp-sass": "^5.0.0",
+		"lazypipe": "^1.0.2",
+		"resolve-bin": "^0.4.1",
+		"sass": "^1.36.0",
+		"through2": "^2.0.5",
+		"undertaker-registry": "^1.0.1"
 	},
 	"devDependencies": {
+		"@wordpress/eslint-plugin": "^9.1.0",
 		"@wordpress/prettier-config": "^1.1.0",
+		"eslint": "^7.31.0",
 		"prettier": "npm:wp-prettier@^2.2.1-beta-1"
 	}
 }
