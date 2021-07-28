@@ -50,7 +50,7 @@ npx gulp-wp
 
 This will run the default task, which watches and compiles your files and runs BrowserSync.
 
-Note that any argument that you can pass to the standard `gulp` command you can pass with `gulp-wp`, with the exception of `--gulpfile` and `--cwd`, since those are used internally to run the appropriate gulpfile.
+> Note that any argument that you can pass to the standard `gulp` command you can pass with `gulp-wp`, with the exception of `--gulpfile` and `--cwd`, since those are used internally to run the appropriate gulpfile.
 
 If you'd prefer, you can canonize the tasks as npm scripts in your project's `package.json`:
 
@@ -68,9 +68,9 @@ If you'd prefer, you can canonize the tasks as npm scripts in your project's `pa
 
 The above allows you to run the default task via `npm start` and the build task via `npm run build`.
 
-Note that usage is different if you want to customize the tasks or add your own. See [Customization](#customization) for details.
+> Note that usage is different if you want to customize the tasks or add your own. See [Customization](#customization) for details.
 
-#### Tasks
+#### Available Tasks
 
 There are several tasks available for individual aspects of development. Generally speaking, you probably shouldn't need to run them individually, since they are run as needed during the `watch` and `build` tasks.
 
@@ -78,14 +78,54 @@ Running a task in your project is as simple as calling `npx gulp-wp foo` where "
 
 Task | Description
 -----|------------
-`watch` | Default task that runs when no task is specified. Runs everything that `build` does, but also watches your files for changes and sends real-time updates via BrowserSync to your browser.
-`build` | Runs all of the various tasks to build your project for deployment.
-`scripts` | Runs `@wordpress/scripts` to package your JavaScript and generate asset files with a version hash and dependency array.
-`styles` | Compiles your Sass or Post CSS.
-`translate` | Runs `wp-pot` to create translation files.
-`version` | Copies version number updates from `package.json` to your theme's `style.css` file or your plugin's main php file.
+[dev](#dev-default) | Default task that runs when no task is specified (i.e. `npx gulp-wp`). Runs everything that `build` does, but also watches your files for changes and sends real-time updates via BrowserSync to your browser.
+[build](#build) | Runs all of the various tasks to build your project for deployment.
+[scripts](#scripts) | Runs `@wordpress/scripts` to package your JavaScript and generate asset files with a version hash and dependency array.
+[styles](#styles) | Compiles your Sass or Post CSS.
+[translate](#translate) | Runs `wp-pot` to create translation files.
+[version](#version) | Copies version number updates from `package.json` to your theme's `style.css` file or your plugin's main php file.
 
-## Environment Configuration
+> See the [Tasks](#tasks) section below for more details about each task.
+
+### Project Structure
+
+If you want to use this workflow with zero configuration, your project must be set up with the files located where the default configuration expects:
+
+```
+project (root)
+  ├╴gulp-wp.config.js // optional
+  ├╴gulpfile.js // optional
+  ├╴index.php // required by WordPress
+  ├╴package.json
+  ├╴style.css // required by WordPress, theme info only (no styles)
+  ├╴dist // processed files only
+  │ ├╴css
+  │ │ ├╴*.css
+  │ │ └╴*.css.map
+  │ └╴js
+  │   ├╴*.js
+  │   └╴*.js.map
+  ├╴languages
+  └╴src
+    ├╴styles
+    │ ├╴*.[css|scss|sass]
+    │ └╴[subfolders]
+    └╴scripts
+      ├╴*.js
+      └╴[subfolders]
+```
+
+All files within the `styles` and `scripts` folders in `src` will be treated as separate entrypoints to transform, meaning they will be processed by the workflow and output to the appropriate folders in `dist`, including their sourcemap files.
+
+> Yes, sourcemaps are output in development as well as production. It doesn't hurt performance and is helpful for production debuging and fellow developers learning our craft.
+
+Subfolders in `styles` and `scripts` are not processed directly. Use subfolders to organize your partials or modules and import them where necessary into an entrypoint file in the root of the folder.
+
+## Configuration
+
+While this package can be used with "zero configuration", your project may require that some defaults are changed.
+
+### Environment Configuration
 
 There are certain configurations that may be unique to each developer or environment, such as the local development URL or what browser BrowserSync should open, if any, so this package supports [Dotenv](https://www.npmjs.com/package/dotenv) for the options listed below. Just add a file to the root of your project named ".env", add any of the below options, and don't forget to add the file to your `gitignore`.
 
@@ -97,7 +137,7 @@ BROWSERSYNC_OPEN | `true` | boolean | See https://browsersync.io/docs/options#op
 BROWSERSYNC_BROWSER | N/A | string | Must be either a single string value or an array in JSON format as a string. See https://browsersync.io/docs/options#option-browser
 BROWSERSYNC_NOTIFY | `true` | boolean | See https://browsersync.io/docs/options#option-notify
 
-### Example Dotenv file
+#### Example Dotenv file
 
 file: .env
 
@@ -109,9 +149,65 @@ BROWSERSYNC_BROWSER="['firefox', 'google chrome']"
 BROWSERSYNC_NOTIFY=true
 ```
 
-Note that you can also set other environment variables for tools used by this workflow. For instance, you can set `DISABLE_NOTIFIER=true` to turn off `gulp-notify` instead of using the `NOTIFY` option.
+> Note that you can also set other environment variables for tools used by this workflow. For instance, you can set `DISABLE_NOTIFIER=true` to turn off `gulp-notify` directly instead of using the `NOTIFY` option.
 
-## Customization
+## Tasks
+
+### Dev (Default)
+
+```shell
+gulp-wp
+```
+
+or
+
+```shell
+gulp-wp dev
+```
+
+### Build
+
+```shell
+gulp-wp build
+```
+
+### Styles
+
+```shell
+gulp-wp styles
+```
+
+Transforms your source files (`.css`, `.scss`, `.sass`) into CSS.
+
+Features:
+  * [gulp-sass](https://www.npmjs.com/package/gulp-sass): Implements [Dart Sass](http://sass-lang.com/dart-sass) and sets the `node_modules` folder as an `includePath` (so you can do `@import 'foo/bar'` instead of `@import '../../node_modules/foo/bar'`).
+  * [gulp-sass-glob](https://www.npmjs.com/package/gulp-sass-glob): Import sass files using glob patterns, great for importing styles for components that don't depend on each other.
+  * [gulp-postcss](https://www.npmjs.com/package/gulp-postcss): Currently the only PostCSS plugin in use by default is [Autoprefixer](https://www.npmjs.com/package/autoprefixer).
+  * [gulp-clean-css](https://www.npmjs.com/package/gulp-clean-css): Minifies CSS inteligently. Set to level 2 optimizations by default.
+
+> Using Sass is optional--If you prefer to use PostCSS plugins, refer to this documentation for how to load them via postcss config: https://www.npmjs.com/package/postcss-load-config
+
+### Scripts
+
+```shell
+gulp-wp scripts
+```
+
+### Translate
+
+```shell
+gulp-wp translate
+```
+
+**This does not translate your project into other languages. It simply sets up the translation file which can then be used to translate your project!**
+
+### Version
+
+```shell
+gulp-wp version
+```
+
+### Custom Tasks
 
 So, you've installed `gulp-wp` and it's working well for you, except you'd rather it did one of the tasks a little differently, like adding your own task to run with the standard `watch` and `build` tasks.
 
