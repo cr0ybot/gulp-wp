@@ -15,8 +15,6 @@ const { loadTasks } = require( './util' );
 module.exports = ( gulp ) => {
 	const tasks = loadTasks();
 
-	console.log( 'found tasks', tasks );
-
 	// TODO: load config (cosmicconfig?)
 	/*
 	{
