@@ -106,13 +106,14 @@ project (root)
   │   ├╴*.js
   │   └╴*.js.map
   ├╴languages
+	│ └╴{textdomain}.pot
   └╴src
     ├╴styles
     │ ├╴*.[css|scss|sass]
-    │ └╴[subfolders]
+    │ └╴{subfolders}
     └╴scripts
-      ├╴*.js
-      └╴[subfolders]
+      ├╴*.[js|mjs|cjs|jsx|ts|tsx]
+      └╴{subfolders}
 ```
 
 All files within the `styles` and `scripts` folders in `src` will be treated as separate entrypoints to transform, meaning they will be processed by the workflow and output to the appropriate folders in `dist`, including their sourcemap files.
@@ -177,7 +178,7 @@ gulp-wp build
 gulp-wp styles
 ```
 
-Transforms your source files (`.css`, `.scss`, `.sass`) into CSS.
+Transforms your _style_ source files (`.css`, `.scss`, `.sass`) into CSS for the browser.
 
 Features:
   * [gulp-sass](https://www.npmjs.com/package/gulp-sass): Implements [Dart Sass](http://sass-lang.com/dart-sass) and sets the `node_modules` folder as an `includePath` (so you can do `@import 'foo/bar'` instead of `@import '../../node_modules/foo/bar'`).
@@ -193,13 +194,23 @@ Features:
 gulp-wp scripts
 ```
 
+Transforms your _script_ source files (`.js`, `.jsx`, `.ts`, `.tsx`, etc) into JS for the browser.
+
+Features:
+  * [@wordpress/scripts](https://www.npmjs.com/package/@wordpress/scripts): Scripts are transformed via Webpack and the official `@wordpress/scripts` config. This provides many benefits, most notably that "asset" files are generated that include a version hash and a dependencies array for enqueuing based on imports of core `@wordpress/*` modules.
+
 ### Translate
 
 ```shell
 gulp-wp translate
 ```
 
-**This does not translate your project into other languages. It simply sets up the translation file which can then be used to translate your project!**
+Generate a `.pot` file for your project.
+
+Features:
+  * [gulp-wp-pot](https://www.npmjs.com/package/gulp-wp-pot) Pot file generator
+
+> This task does not translate your project into other languages. It simply sets up the translation file which can then be used to translate your project!
 
 ### Version
 
