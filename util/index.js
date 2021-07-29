@@ -27,7 +27,7 @@ const handleStreamError = ( task ) => {
 			// Separate simplifier message for notification
 			let notifyErr = err;
 
-			// Checks for PluginError object and reformats
+			// Checks for PluginError object and reformat
 			if ( err.plugin && err.name && err.message ) {
 				notifyErr = err.message;
 				err = `${ c.red( err.name ) } in plugin "${ c.cyan(

@@ -2,6 +2,7 @@
  * Task: styles
  */
 
+// External
 const autoprefixer = require( 'autoprefixer' );
 const cleanCSS = require( 'gulp-clean-css' );
 const destClean = require( 'gulp-dest-clean' );
@@ -11,6 +12,7 @@ const postcss = require( 'gulp-postcss' );
 const sass = require( 'gulp-sass' )( require( 'sass' ) );
 const sassGlob = require( 'gulp-sass-glob' );
 
+// Internal
 const { handleStreamError, logEntries } = require( '../util' );
 
 module.exports = ( { src = 'src/styles/*.*', dest = 'dist/css' } = {} ) => {

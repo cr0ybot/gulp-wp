@@ -15,7 +15,7 @@ const { loadTasks } = require( './util' );
 module.exports = ( gulp ) => {
 	const tasks = loadTasks();
 
-	// TODO: load config (cosmicconfig?)
+	// TODO: load config (gulp-wp.config.js?)
 	/*
 	{
 		tasks: {
