@@ -17,7 +17,7 @@ const { handleStreamError, logEntries } = require( '../util' );
 
 module.exports = ( {
 	src = [ '**/*.php', '!node_modules/**/*', '!**/*.asset.php' ],
-	dest = 'languages_',
+	dest = 'languages',
 } = {} ) => {
 	return function translate() {
 		// TODO: different file if plugin
