@@ -9,7 +9,6 @@ const { basename, extname, join } = require( 'path' );
 // External
 const c = require( 'ansi-colors' );
 const log = require( 'fancy-log' );
-const merge = require( 'merge-deep' );
 const notify = require( 'gulp-notify' );
 const plumber = require( 'gulp-plumber' );
 
@@ -64,7 +63,7 @@ handleStreamError.stop = () => {
  * @function
  * @returns {array} Array of task tulpes [taskname, taskFn] ordered by priority.
  */
-const loadTasks = ( gulp, config = {} ) => {
+const loadTasks = () => {
 	// get files from tasks folder
 	return (
 		readdirSync( join( __dirname, '..', 'tasks' ) )
@@ -75,19 +74,15 @@ const loadTasks = ( gulp, config = {} ) => {
 				const taskName = basename( file, '.js' );
 				const taskInfo = require( `../tasks/${ taskName }` );
 
+				// Validate task function
 				if (
 					taskInfo.hasOwnProperty( 'task' ) &&
 					typeof taskInfo.task === 'function'
 				) {
-					const taskConfig = merge(
-						taskInfo?.config || {},
-						config[ taskName ] || {}
-					);
-
-					acc[ taskName ] = taskInfo.task( gulp, taskConfig );
+					acc[ taskName ] = taskInfo;
 				} else {
 					throw new Error(
-						`Task file "${ taskName }" has no task property or the task prop is not a function.`
+						`Task file "${ taskName }" has no task property, or the task prop is not a function.`
 					);
 				}
 

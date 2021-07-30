@@ -36,5 +36,6 @@ module.exports = {
 	config: {
 		src: 'src/scripts/*.*',
 		dest: 'dist/js',
+		watch: 'src/scripts/**/*.*',
 	},
 };

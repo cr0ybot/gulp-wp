@@ -46,5 +46,6 @@ module.exports = {
 	config: {
 		src: 'src/styles/*.*',
 		dest: 'dist/css',
+		watch: 'src/styles/**/*.*',
 	},
 };
