@@ -8,30 +8,17 @@ if ( process.env.NOTIFY === 'false' ) {
 	process.env.DISABLE_NOTIFIER = true;
 }
 
+// Internal
 const registry = require( './lib/registry' );
-
 const { loadTasks } = require( './util' );
 
-module.exports = ( gulp ) => {
-	const tasks = loadTasks();
-
-	// TODO: load config (gulp-wp.config.js?)
-	/*
-	{
-		tasks: {
-			syles: {
-				src: '',
-				dest: '',
-			}
-		}
-	}
-	*/
+module.exports = ( gulp, config = {} ) => {
+	// TODO: load local config file (gulp-wp.config.js?)
+	const tasks = loadTasks( gulp, config );
 
 	// Register our custom registry
-	gulp.registry( registry( tasks ) );
+	const gulpWP = registry( gulp, tasks );
+	gulp.registry( gulpWP );
 
-	// TODO: Is this useful? How to easily reuse/compose tasks?
-	return {
-		tasks,
-	};
+	return gulpWP;
 };

@@ -57,6 +57,7 @@
 		"gulp-sort": "^2.0.0",
 		"gulp-wp-pot": "^2.5.0",
 		"lazypipe": "^1.0.2",
+		"merge-deep": "^3.0.3",
 		"resolve-bin": "^0.4.1",
 		"sass": "^1.36.0",
 		"subpipe": "^1.0.2",
