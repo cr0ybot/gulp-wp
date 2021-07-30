@@ -5,9 +5,9 @@
 // External
 const autoprefixer = require( 'autoprefixer' );
 const cleanCSS = require( 'gulp-clean-css' );
-const destClean = require( 'gulp-dest-clean' );
+const dependents = require( 'gulp-dependents' );
 const filter = require( 'gulp-filter' );
-const logFiles = require( 'gulp-debug' );
+//const logFiles = require( 'gulp-debug' );
 const postcss = require( 'gulp-postcss' );
 const sass = require( 'gulp-sass' )( require( 'sass' ) );
 const sassGlob = require( 'gulp-sass-glob' );
@@ -16,36 +16,51 @@ const sassGlob = require( 'gulp-sass-glob' );
 const { handleStreamError } = require( '../util' );
 
 module.exports = {
-	task: ( gulp, { src, dest } ) => {
+	task: ( gulp, { src, dest, includePaths } ) => {
+		const firstRun = Date.now();
 		return function styles() {
 			const sassFilter = filter( '*.s[a|c]ss', { restore: true } );
-			return gulp
-				.src( src, { sourcemaps: true } )
-				.pipe( handleStreamError( 'styles' ) )
-				.pipe( logFiles( { title: 'style entry:' } ) )
-				.pipe( sassFilter )
-				.pipe( sassGlob() )
-				.pipe(
-					sass.sync( {
-						includePaths: [ 'node_modules' ],
-						indentType: 'tab',
-						outputStype: 'expanded',
+			return (
+				gulp
+					.src( src, {
+						sourcemaps: true,
+						since: gulp.lastRun( styles ) || firstRun,
 					} )
-				)
-				.pipe( sassFilter.restore )
-				.pipe( postcss( [ autoprefixer() ] ) )
-				.pipe(
-					cleanCSS( {
-						level: 2,
-					} )
-				)
-				.pipe( gulp.dest( dest, { sourcemaps: '.' } ) )
-				.pipe( destClean( dest ) );
+					.pipe( handleStreamError( 'styles' ) )
+					//.pipe( logFiles( { title: 'style entry:' } ) )
+					.pipe( sassFilter )
+					.pipe( sassGlob() ) // transform glob imports
+					.pipe(
+						dependents(
+							{
+								'.scss': {
+									basePath: includePaths,
+								},
+							},
+							{ logDependents: true }
+						)
+					)
+					.pipe(
+						sass.sync( {
+							includePaths,
+							indentType: 'tab',
+							outputStype: 'expanded',
+						} )
+					)
+					.pipe( sassFilter.restore )
+					.pipe( postcss( [ autoprefixer() ] ) )
+					.pipe(
+						cleanCSS( {
+							level: 2,
+						} )
+					)
+					.pipe( gulp.dest( dest, { sourcemaps: '.' } ) )
+			);
 		};
 	},
 	config: {
-		src: 'src/styles/*.*',
+		src: 'src/styles/**/*.*', // Sass compiler will ignore partials as entries
 		dest: 'dist/css',
-		watch: 'src/styles/**/*.*',
+		includePaths: [ 'node_modules' ],
 	},
 };
