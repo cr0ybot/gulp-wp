@@ -9,7 +9,7 @@ if ( process.env.NOTIFY === 'false' ) {
 }
 
 // Internal
-const registry = require( './lib/registry' );
+const GulpWPRegistry = require( './lib/registry' );
 const { loadTasks } = require( './util' );
 
 module.exports = ( gulp, config = {} ) => {
@@ -22,7 +22,7 @@ module.exports = ( gulp, config = {} ) => {
 	const tasks = loadTasks();
 
 	// Register our custom registry
-	const gulpWP = registry( gulp, tasks, config );
+	const gulpWP = new GulpWPRegistry( gulp, tasks, config );
 	gulp.registry( gulpWP );
 
 	return gulpWP;
