@@ -8,6 +8,7 @@ const { promisify } = require( 'util' );
 
 // External
 const fileData = promisify( require( 'wp-get-file-data' ) );
+const logFiles = require( 'gulp-debug' );
 const sort = require( 'gulp-sort' );
 const wpPot = require( 'gulp-wp-pot' );
 
@@ -30,24 +31,27 @@ module.exports = {
 					src = [ src, metadataFile ];
 				}
 
-				return (
-					gulp
-						.src( src )
-						.pipe( handleStreamError( 'styles' ) )
-						.pipe( sort() )
-						//.pipe( logEntries( 'Translate files:' ) )
-						.pipe(
-							wpPot( {
-								domain,
-								package,
-								//bugReport: 'https://example.com',
-								//lastTranslator: 'Your Name Here <you@example.com>',
-								//team: 'Team Name Here <team@example.com>',
-								metadataFile,
-							} )
-						)
-						.pipe( gulp.dest( join( dest, `${ domain }.pot` ) ) )
-				);
+				return gulp
+					.src( src )
+					.pipe( handleStreamError( 'styles' ) )
+					.pipe( sort() )
+					.pipe(
+						wpPot( {
+							domain,
+							package,
+							//bugReport: 'https://example.com',
+							//lastTranslator: 'Your Name Here <you@example.com>',
+							//team: 'Team Name Here <team@example.com>',
+							metadataFile,
+						} )
+					)
+					.pipe( gulp.dest( join( dest, `${ domain }.pot` ) ) )
+					.pipe(
+						logFiles( {
+							title: 'translate result:',
+							showCount: false,
+						} )
+					);
 			} );
 		};
 	},

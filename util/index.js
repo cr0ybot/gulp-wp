@@ -12,8 +12,6 @@ const log = require( 'fancy-log' );
 const merge = require( 'merge-deep' );
 const notify = require( 'gulp-notify' );
 const plumber = require( 'gulp-plumber' );
-const print = require( 'gulp-print' ).default;
-const subpipe = require( 'subpipe' );
 
 c.enabled = require( 'color-support' ).hasBasic;
 notify.logLevel( 0 );
@@ -98,20 +96,7 @@ const loadTasks = ( gulp, config = {} ) => {
 	);
 };
 
-/**
- * Logs files in the stream with a title.
- *
- * @function
- * @returns {stream}
- */
-const logEntries = ( title = 'Entries:' ) => {
-	log( title );
-
-	return subpipe( ( stream ) => stream.pipe( print() ) );
-};
-
 module.exports = {
 	handleStreamError,
 	loadTasks,
-	logEntries,
 };
