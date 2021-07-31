@@ -50,7 +50,6 @@
 		"gulp-clean-css": "^4.3.0",
 		"gulp-debug": "^4.0.0",
 		"gulp-dependents": "^1.2.5",
-		"gulp-dest-clean": "^0.5.0",
 		"gulp-filter": "^7.0.0",
 		"gulp-notify": "^4.0.0",
 		"gulp-plumber": "^1.2.1",

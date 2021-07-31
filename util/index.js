@@ -16,6 +16,38 @@ c.enabled = require( 'color-support' ).hasBasic;
 notify.logLevel( 0 );
 
 /**
+ * Global config used for all "instances" of gulp-dependents, because the first that runs sets the config for all.
+ *
+ * Custom JS parser: https://stackoverflow.com/a/66748484/900971
+ */
+const jsPostfixes = [ '.js', '.jsx', '.ts', '.tsx', '.mjs', '.cjs' ];
+const jsDependentsConfig = {
+	postfixes: jsPostfixes,
+	parserSteps: [
+		/import(?:["'\s]*(?:[\w*${}\n\r\t, ]+)from\s*)?["'\s]*(.*[@\w_-]+)["'\s].*;?$/gm,
+		function ( path ) {
+			// Remove file extension, if any
+			// TODO: insert postfixes dynamically?
+			path = path.replace( /\.[js|jsx|ts|tsx|mjs|cjs]$/, '' );
+
+			// Local packages
+			paths = [ path, `${ path }/index` ];
+
+			return paths;
+		},
+	],
+	basePath: [ 'node_modules' ],
+};
+const dependentsConfig = {
+	'.scss': {
+		basePath: [ 'node_modules' ],
+	},
+};
+for ( const ext of jsPostfixes ) {
+	dependentsConfig[ ext ] = jsDependentsConfig;
+}
+
+/**
  * Handle stream errors without stopping the entire workflow.
  *
  * @function
@@ -92,6 +124,7 @@ const loadTasks = () => {
 };
 
 module.exports = {
+	dependentsConfig,
 	handleStreamError,
 	loadTasks,
 };
