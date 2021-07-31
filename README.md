@@ -166,11 +166,15 @@ or
 gulp-wp dev
 ```
 
+Runs `build`, then watches your files for changes, incimentally recompiles, and streams updates to or reloads your browser via BrowserSync.
+
 ### Build
 
 ```shell
 gulp-wp build
 ```
+
+Runs `styles`, `scripts`, and `translate` in parallel.
 
 ### Styles
 
@@ -185,6 +189,7 @@ Features:
   * [gulp-sass-glob](https://www.npmjs.com/package/gulp-sass-glob): Import sass files using glob patterns, great for importing styles for components that don't depend on each other.
   * [gulp-postcss](https://www.npmjs.com/package/gulp-postcss): Currently the only PostCSS plugin in use by default is [Autoprefixer](https://www.npmjs.com/package/autoprefixer).
   * [gulp-clean-css](https://www.npmjs.com/package/gulp-clean-css): Minifies CSS inteligently. Set to level 2 optimizations by default.
+  * [gulp-dependents](https://www.npmjs.com/package/gulp-dependents): Only recompile the entry files that import/use the partial you just edited.
 
 > Using Sass is optional--If you prefer to use PostCSS plugins, refer to this documentation for how to load them via postcss config: https://www.npmjs.com/package/postcss-load-config
 
@@ -198,6 +203,7 @@ Transforms your _script_ source files (`.js`, `.jsx`, `.ts`, `.tsx`, etc) into J
 
 Features:
   * [@wordpress/scripts](https://www.npmjs.com/package/@wordpress/scripts): Scripts are transformed via Webpack and the official `@wordpress/scripts` config. This provides many benefits, most notably that "asset" files are generated that include a version hash and a dependencies array for enqueuing based on imports of core `@wordpress/*` modules.
+  * [gulp-dependents](https://www.npmjs.com/package/gulp-dependents): While this is by default a Sass tool, it has been configured to also handle JavaScript ES6 imports. Only entrypoint files that import the module you just edited will be recompiled.
 
 ### Translate
 
@@ -210,13 +216,15 @@ Generate a `.pot` file for your project.
 Features:
   * [gulp-wp-pot](https://www.npmjs.com/package/gulp-wp-pot) Pot file generator
 
-> This task does not translate your project into other languages. It simply sets up the translation file which can then be used to translate your project!
+> This task does not translate your project into other languages. It simply sets up the translation file which can then be used to translate your project with a tool like [Poedit](https://poedit.net/)!
 
 ### Version
 
 ```shell
 gulp-wp version
 ```
+
+// TODO
 
 ### Custom Tasks
 
@@ -225,12 +233,20 @@ So, you've installed `gulp-wp` and it's working well for you, except you'd rathe
 Instead of running `gulp-wp` directly, you can instead add your own `gulpfile.js` in the root of your project and `require()` this module, then export your custom tasks and even modify ones provided by `gulp-wp`:
 
 ```javascript
-const gulpWP = require('@b.d/gulp-wp');
+const fulp = require('gulp');
+const gulpWP = require('@b.d/gulp-wp')(gulp);
 
-// TODO: sort this out
+export function custom(done) {
+	// ... do custom task
+	done();
+}
+
+export const build = gulp.series( 'clean', gulp.parallel( 'scripts', 'styles', 'translate', custom ) );
 ```
 
 Now, instead of running `gulp-wp`, you can run `gulp` directly (as long as you've also installed the [gulp-cli package](https://www.npmjs.com/package/gulp-cli) globally, otherwise you can run `npx gulp`).
+
+> Note that you will have to rebuild the `build` task manually by re-adding all of the tasks you want to run. This new recomposed `build` will be used in the `dev`/`default` task.
 
 ## Rationale
 
