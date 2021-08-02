@@ -228,25 +228,30 @@ gulp-wp version
 
 ### Custom Tasks
 
-So, you've installed `gulp-wp` and it's working well for you, except you'd rather it did one of the tasks a little differently, like adding your own task to run with the standard `watch` and `build` tasks.
+So, you've installed `gulp-wp` and it's working well for you, except you'd rather it did one of the tasks a little differently, or you need to add your own task to run with the standard `watch` and `build` tasks.
 
-Instead of running `gulp-wp` directly, you can instead add your own `gulpfile.js` in the root of your project and `require()` this module, then export your custom tasks and even modify ones provided by `gulp-wp`:
+Instead of running `gulp-wp` directly, you can instead add your own `gulpfile.js` in the root of your project and `require()` this module, then `export` your custom tasks and even override ones provided by `gulp-wp`:
 
 ```javascript
-const fulp = require('gulp');
+const gulp = require('gulp');
+
+// Require GulpWP and pass your local `gulp` instance to it
 const gulpWP = require('@b.d/gulp-wp')(gulp);
 
-export function custom(done) {
+// Run this custom task via `gulp custom`
+exports.custom = (done) => {
 	// ... do custom task
 	done();
 }
 
-export const build = gulp.series( 'clean', gulp.parallel( 'scripts', 'styles', 'translate', custom ) );
+// Run this custom build task via `gulp build`
+exports.build = gulp.series( 'clean', gulp.parallel( 'scripts', 'styles', 'translate', custom ) );
 ```
+> Note that you will have to rebuild the `build` task manually by re-adding all of the tasks you want to run. This new recomposed `build` will be used in the `dev`/`default` task.
 
 Now, instead of running `gulp-wp`, you can run `gulp` directly (as long as you've also installed the [gulp-cli package](https://www.npmjs.com/package/gulp-cli) globally, otherwise you can run `npx gulp`).
 
-> Note that you will have to rebuild the `build` task manually by re-adding all of the tasks you want to run. This new recomposed `build` will be used in the `dev`/`default` task.
+> Note that you really shouldn't need `gulpfile.babel.js` anymore if you're using a recent Node.js version. The only thing you can't currently do is use `import` and `export`. Just use `require` and `module.exports`.
 
 ## Rationale
 
