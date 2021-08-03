@@ -4,7 +4,6 @@
 
 // External
 const dependents = require( 'gulp-dependents' );
-const logFiles = require( 'gulp-debug' );
 const named = require( 'vinyl-named' );
 const filter = require( 'gulp-filter' );
 const webpack = require( 'webpack' );
@@ -12,7 +11,7 @@ const webpackStream = require( 'webpack-stream' );
 const wpWebpackConfig = require( '@wordpress/scripts/config/webpack.config' );
 
 // Internal
-const { dependentsConfig, handleStreamError } = require( '../util' );
+const { dependentsConfig, handleStreamError, logFiles } = require( '../util' );
 
 module.exports = {
 	task: ( gulp, { src, dest, entries, includePaths } ) => {
@@ -41,7 +40,7 @@ module.exports = {
 				.pipe( handleStreamError( 'scripts' ) )
 				.pipe( dependents( dependentsConfig, { logDependents: true } ) )
 				.pipe( filterEntries )
-				.pipe( logFiles( { title: 'script entry:' } ) )
+				.pipe( logFiles( { task: 'scripts', title: 'entry:' } ) )
 				.pipe( named() )
 				.pipe(
 					webpackStream( webpackConfig, webpack, ( err, stats ) => {

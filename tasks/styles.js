@@ -7,13 +7,12 @@ const autoprefixer = require( 'autoprefixer' );
 const cleanCSS = require( 'gulp-clean-css' );
 const dependents = require( 'gulp-dependents' );
 const filter = require( 'gulp-filter' );
-const logFiles = require( 'gulp-debug' );
 const postcss = require( 'gulp-postcss' );
 const sass = require( 'gulp-sass' )( require( 'sass' ) );
 const sassGlob = require( 'gulp-sass-glob' );
 
 // Internal
-const { dependentsConfig, handleStreamError } = require( '../util' );
+const { dependentsConfig, handleStreamError, logFiles } = require( '../util' );
 
 module.exports = {
 	task: ( gulp, { src, dest, entries, includePaths } ) => {
@@ -33,7 +32,7 @@ module.exports = {
 				.pipe( sassGlob() ) // transform glob imports
 				.pipe( dependents( dependentsConfig, { logDependents: true } ) )
 				.pipe( filterEntries )
-				.pipe( logFiles( { title: 'style entry:' } ) )
+				.pipe( logFiles( { task: 'styles', title: 'entry:' } ) )
 				.pipe(
 					sass.sync( {
 						includePaths,

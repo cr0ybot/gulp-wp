@@ -8,12 +8,11 @@ const { promisify } = require( 'util' );
 
 // External
 const fileData = promisify( require( 'wp-get-file-data' ) );
-const logFiles = require( 'gulp-debug' );
 const sort = require( 'gulp-sort' );
 const wpPot = require( 'gulp-wp-pot' );
 
 // Internal
-const { c, handleStreamError, log } = require( '../util' );
+const { c, handleStreamError, log, logFiles } = require( '../util' );
 
 module.exports = {
 	task: ( gulp, { src, dest }, registry ) => {
@@ -52,12 +51,29 @@ module.exports = {
 						}
 					}
 
+					if ( ! package ) {
+						log.warn(
+							c.cyan( `${ projectType } Name` ),
+							c.yellow( 'not found.' )
+						);
+					} else {
+						log.info(
+							`${ c.cyan( `${ projectType } Name` ) }:`,
+							c.magenta( package )
+						);
+					}
+
 					if ( ! domain ) {
 						log.warn(
 							c.cyan( 'Text Domain' ),
 							c.yellow(
 								'not found, all text domains will be included.'
 							)
+						);
+					} else {
+						log.info(
+							`${ c.cyan( 'Text Domain' ) }:`,
+							c.magenta( domain )
 						);
 					}
 
@@ -86,7 +102,8 @@ module.exports = {
 						)
 						.pipe(
 							logFiles( {
-								title: `${ c.cyan( 'translate' ) } result:`,
+								task: 'translate',
+								title: 'result:',
 								showCount: false,
 							} )
 						);

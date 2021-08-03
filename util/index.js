@@ -16,6 +16,7 @@ const { cwd } = require( 'process' );
 
 // External
 const c = require( 'ansi-colors' );
+const debug = require( 'gulp-debug' );
 const { sync: glob } = require( 'glob' );
 const log = require( 'gulplog' );
 const notify = require( 'gulp-notify' );
@@ -199,6 +200,19 @@ const loadTasks = () => {
 	}, {} );
 };
 
+/**
+ * File logging utility
+ */
+const logFiles = ( options ) => {
+	const { task, title: desc } = options;
+	const title = `${ c.cyan( task ) } ${ desc }`;
+	options = Object.assign( {}, options, {
+		title,
+		logger: log.info,
+	} );
+	return debug( options );
+};
+
 module.exports = {
 	c,
 	dependentsConfig,
@@ -208,4 +222,5 @@ module.exports = {
 	loadConfig,
 	loadTasks,
 	log,
+	logFiles,
 };
