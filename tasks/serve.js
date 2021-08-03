@@ -7,6 +7,9 @@
 // External
 const bs = require( 'browser-sync' ).create( 'gulp-wp' );
 
+// Internal
+const { log } = require( '../util' );
+
 module.exports = {
 	task: ( gulp, {}, registry ) => {
 		const {
@@ -43,6 +46,7 @@ module.exports = {
 		};
 
 		return function serve( done ) {
+			log.debug( 'BrowserSync config:', bsConfig );
 			bs.init( bsConfig, done );
 		};
 	},
