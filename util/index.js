@@ -17,7 +17,7 @@ const { cwd } = require( 'process' );
 // External
 const c = require( 'ansi-colors' );
 const { sync: glob } = require( 'glob' );
-const log = require( 'fancy-log' );
+const log = require( 'gulplog' );
 const notify = require( 'gulp-notify' );
 const plumber = require( 'gulp-plumber' );
 
@@ -138,8 +138,10 @@ handleStreamError.stop = () => {
 const isTheme = () => {
 	try {
 		accessSync( 'style.css', fsConstants.R_OK );
+		log.debug( 'Project is type', c.cyan( 'theme' ) );
 		return true;
 	} catch ( err ) {
+		log.debug( 'Project is type', c.cyan( 'plugin' ) );
 		return false;
 	}
 };
@@ -154,8 +156,10 @@ const loadConfig = () => {
 	const configPath = join( cwd(), 'gulp-wp.config.js' );
 	try {
 		accessSync( configPath, fsConstants.R_OK );
+		log.debug( 'Loading local config file', c.blue( configPath ) );
 		return require( configPath );
 	} catch ( err ) {
+		log.debug( 'No local config file found' );
 		return null;
 	}
 };
