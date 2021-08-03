@@ -10,10 +10,13 @@ if ( process.env.NOTIFY === 'false' ) {
 
 // Internal
 const GulpWPRegistry = require( './lib/registry' );
-const { getPluginFile, isTheme, loadTasks } = require( './util' );
+const { getPluginFile, isTheme, loadConfig, loadTasks } = require( './util' );
 
 module.exports = ( gulp, config = {} ) => {
-	// TODO: load local config file (gulp-wp.config.js?)
+	const localConfig = loadConfig();
+	config = Object.assign( {}, localConfig, config );
+
+	// Add env explicitly so that it can't be set via config
 	config.env = {
 		DEV_URL: 'http://localhost',
 		...env.parsed,

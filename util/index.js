@@ -12,6 +12,7 @@ const {
 	readSync,
 } = require( 'fs' );
 const { basename, extname, join } = require( 'path' );
+const { cwd } = require( 'process' );
 
 // External
 const c = require( 'ansi-colors' );
@@ -143,6 +144,22 @@ const isTheme = () => {
 };
 
 /**
+ * Load local config file if it exists
+ *
+ * @function
+ * @returns {object} Config object
+ */
+const loadConfig = () => {
+	const configPath = join( cwd(), 'gulp-wp.config.js' );
+	try {
+		accessSync( configPath, fsConstants.R_OK );
+		return require( configPath );
+	} catch ( err ) {
+		return null;
+	}
+};
+
+/**
  * Load predefined tasks.
  *
  * @function
@@ -181,5 +198,6 @@ module.exports = {
 	getPluginFile,
 	handleStreamError,
 	isTheme,
+	loadConfig,
 	loadTasks,
 };
