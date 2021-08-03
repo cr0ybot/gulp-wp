@@ -4,6 +4,15 @@
  * Watch project files for changes and run build tasks
  */
 
+// Node
+const { dirname, join, parse, relative, resolve } = require( 'path' );
+
+// External
+const del = require( 'del' );
+
+// Internal
+const { c, log } = require( '../util' );
+
 module.exports = {
 	task: ( gulp, {}, registry ) => {
 		const {
@@ -18,7 +27,11 @@ module.exports = {
 			)
 				// Mirror src file deletions to dest
 				.on( 'unlink', ( filepath ) => {
-					//console.log( 'deleted:', filepath );
+					log.debug(
+						c.cyan( 'styles' ),
+						'src deleted:',
+						c.blue( filepath )
+					);
 					const relPath = relative(
 						resolve( dirname( styles.src ) ),
 						join(
@@ -27,8 +40,17 @@ module.exports = {
 						)
 					);
 					const destPath = resolve( styles.dest, relPath );
-					//console.log( 'removing dest file:', destPath );
-					del.sync( [ destPath, `${ destPath }.map` ] );
+					del( [ destPath, `${ destPath }.map` ] ).then(
+						( paths ) => {
+							for ( const path of paths ) {
+								log.debug(
+									c.cyan( 'styles' ),
+									'removed dest file:',
+									c.blue( destPath )
+								);
+							}
+						}
+					);
 				} );
 			gulp.watch(
 				`${ scripts.src }/**/*.*`,
@@ -37,7 +59,11 @@ module.exports = {
 			)
 				// Mirror src file deletions to dest
 				.on( 'unlink', ( filepath ) => {
-					//console.log( 'deleted:', filepath );
+					log.debug(
+						c.cyan( 'scripts' ),
+						'src deleted:',
+						c.blue( filepath )
+					);
 					const relPath = relative(
 						resolve( dirname( scripts.src ) ),
 						join(
@@ -46,8 +72,17 @@ module.exports = {
 						)
 					);
 					const destPath = resolve( scripts.dest, relPath );
-					//console.log( 'removing dest file:', destPath );
-					del.sync( [ destPath, `${ destPath }.map` ] );
+					del( [ destPath, `${ destPath }.map` ] ).then(
+						( paths ) => {
+							for ( const path of paths ) {
+								log.debug(
+									c.cyan( 'scripts' ),
+									'removed dest file:',
+									c.blue( destPath )
+								);
+							}
+						}
+					);
 				} );
 			gulp.watch(
 				translate.watch || translate.src,
