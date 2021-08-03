@@ -163,34 +163,30 @@ const loadConfig = () => {
  * Load predefined tasks.
  *
  * @function
- * @returns {array} Array of task tulpes [taskname, taskFn] ordered by priority.
+ * @returns {object} Object with tasks as properties
  */
 const loadTasks = () => {
-	// get files from tasks folder
-	return (
-		readdirSync( join( __dirname, '..', 'tasks' ) )
-			// get only js files
-			.filter( ( file ) => extname( file ) === '.js' )
-			// create a tasks object and initialize each task function with config
-			.reduce( ( acc, file ) => {
-				const taskName = basename( file, '.js' );
-				const taskInfo = require( `../tasks/${ taskName }` );
+	// Get files from tasks folder
+	// TODO: get task files from local project?
+	const taskFiles = glob( '*.js', { cwd: join( __dirname, '..', 'tasks' ) } );
+	return taskFiles.reduce( ( acc, file ) => {
+		const taskName = basename( file, '.js' );
+		const taskInfo = require( `../tasks/${ taskName }` );
 
-				// Validate task function exists
-				if (
-					taskInfo.hasOwnProperty( 'task' ) &&
-					typeof taskInfo.task === 'function'
-				) {
-					acc[ taskName ] = taskInfo;
-				} else {
-					throw new Error(
-						`Task file "${ taskName }" has no task property, or the task prop is not a function.`
-					);
-				}
+		// Validate task function exists
+		if (
+			taskInfo.hasOwnProperty( 'task' ) &&
+			typeof taskInfo.task === 'function'
+		) {
+			acc[ taskName ] = taskInfo;
+		} else {
+			throw new Error(
+				`Task file "${ taskName }" has no task property, or the task prop is not a function.`
+			);
+		}
 
-				return acc;
-			}, {} )
-	);
+		return acc;
+	}, {} );
 };
 
 module.exports = {
