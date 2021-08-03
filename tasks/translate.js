@@ -16,12 +16,14 @@ const wpPot = require( 'gulp-wp-pot' );
 const { handleStreamError, logEntries } = require( '../util' );
 
 module.exports = {
-	task: ( gulp, { src, dest } ) => {
+	task: ( gulp, { src, dest }, registry ) => {
 		return function translate() {
-			// TODO: different file if plugin
-			const metadataFile = 'style.css';
+			const { plugin } = registry.config;
+			const metadataFile = plugin || 'style.css';
+			const projectType = plugin ? 'Plugin' : 'Theme';
+
 			return fileData( metadataFile, {
-				package: 'Theme Name',
+				package: `${projectType} Name`,
 				domain: 'Text Domain',
 			} ).then( ( { domain, package } ) => {
 				// Add metadataFile to src array

@@ -3,11 +3,19 @@
  */
 
 // Node
-const { readdirSync } = require( 'fs' );
+const {
+	accessSync,
+	closeSync,
+	constants: fsConstants,
+	openSync,
+	readdirSync,
+	readSync,
+} = require( 'fs' );
 const { basename, extname, join } = require( 'path' );
 
 // External
 const c = require( 'ansi-colors' );
+const { sync: glob } = require( 'glob' );
 const log = require( 'fancy-log' );
 const notify = require( 'gulp-notify' );
 const plumber = require( 'gulp-plumber' );
@@ -46,6 +54,36 @@ const dependentsConfig = {
 for ( const ext of jsPostfixes ) {
 	dependentsConfig[ ext ] = jsDependentsConfig;
 }
+
+/**
+ * Attempts to locate the main plugin file similar to how WordPress does, with a little extra help from `glob`.
+ *
+ * @function
+ * @returns {string} Plugin file path
+ */
+const getPluginFile = () => {
+	// get all php files in the root of the cwd
+	const pluginFilePaths = glob( './*.php' );
+	// for each file, check the first 8192 bytes for "Plugin Name"
+	//console.log( 'looking for plugin file' );
+	for ( const path of pluginFilePaths ) {
+		//console.log( 'checking', path );
+
+		try {
+			const header = Buffer.alloc( 8192 );
+			const fd = openSync( path );
+			readSync( fd, header );
+			closeSync( fd );
+			if ( header.indexOf( 'Plugin Name:' ) !== -1 ) {
+				//console.log( 'found plugin:', path );
+				return path;
+			}
+		} catch ( err ) {
+			// Not this one...
+		}
+	}
+	return null;
+};
 
 /**
  * Handle stream errors without stopping the entire workflow.
@@ -90,6 +128,21 @@ handleStreamError.stop = () => {
 };
 
 /**
+ * Checks if style.css exists.
+ *
+ * @function
+ * @returns {boolean}
+ */
+const isTheme = () => {
+	try {
+		accessSync( 'style.css', fsConstants.R_OK );
+		return true;
+	} catch ( err ) {
+		return false;
+	}
+};
+
+/**
  * Load predefined tasks.
  *
  * @function
@@ -106,7 +159,7 @@ const loadTasks = () => {
 				const taskName = basename( file, '.js' );
 				const taskInfo = require( `../tasks/${ taskName }` );
 
-				// Validate task function
+				// Validate task function exists
 				if (
 					taskInfo.hasOwnProperty( 'task' ) &&
 					typeof taskInfo.task === 'function'
@@ -125,6 +178,8 @@ const loadTasks = () => {
 
 module.exports = {
 	dependentsConfig,
+	getPluginFile,
 	handleStreamError,
+	isTheme,
 	loadTasks,
 };

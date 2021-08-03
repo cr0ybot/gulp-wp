@@ -10,7 +10,7 @@ if ( process.env.NOTIFY === 'false' ) {
 
 // Internal
 const GulpWPRegistry = require( './lib/registry' );
-const { loadTasks } = require( './util' );
+const { getPluginFile, isTheme, loadTasks } = require( './util' );
 
 module.exports = ( gulp, config = {} ) => {
 	// TODO: load local config file (gulp-wp.config.js?)
@@ -18,6 +18,13 @@ module.exports = ( gulp, config = {} ) => {
 		DEV_URL: 'http://localhost',
 		...env.parsed,
 	};
+
+	// If `plugin` not specified in config, check for style.css and then for a plugin entry point
+	if ( ! config.plugin ) {
+		if ( ! isTheme() ) {
+			config.plugin = getPluginFile();
+		}
+	}
 
 	const tasks = loadTasks();
 

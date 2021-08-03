@@ -95,9 +95,9 @@ If you want to use this workflow with zero configuration, your project must be s
 project (root)
   ├╴gulp-wp.config.js // optional
   ├╴gulpfile.js // optional
-  ├╴index.php // required by WordPress
+  ├╴index.php // required for themes
   ├╴package.json
-  ├╴style.css // required by WordPress, theme info only (no styles)
+  ├╴style.css // required for themes, theme info only (no styles)
   ├╴dist // processed files only
   │ ├╴css
   │ │ ├╴*.css
@@ -121,6 +121,10 @@ All files within the `styles` and `scripts` folders in `src` will be treated as 
 > Yes, sourcemaps are output in development as well as production. It doesn't hurt performance and is helpful for production debuging and fellow developers learning our craft.
 
 Subfolders in `styles` and `scripts` are not processed directly. Use subfolders to organize your partials or modules and import them where necessary into an entrypoint file in the root of the folder.
+
+#### Theme or Plugin
+
+Gulp WP can be used for themes *and* plugins. It will assume your project is a theme if there is a `style.css` file in the root, as WordPress requires this file with theme info in the header. Otherwise, it will look for your main plugin PHP file. The [translate task](#translate) uses the theme or plugin header info to set the `package` and `text-domain`.
 
 ## Configuration
 
@@ -151,6 +155,33 @@ BROWSERSYNC_NOTIFY=true
 ```
 
 > Note that you can also set other environment variables for tools used by this workflow. For instance, you can set `DISABLE_NOTIFIER=true` to turn off `gulp-notify` directly instead of using the `NOTIFY` option.
+
+### Project Configuration
+
+If it's really necessary, you *can* provide a configuration object to Gulp WP, either via a `gulp-wp.config.js` file in the root of your project, or as the second parameter when requiring `gulp-wp` in a custom `gulpfile.js` (See [Gulpfile Config](#gulpfile-config)).
+
+There are very few options, and most are geared towards individual task config. Each task contains it's own default configuration in its task file export (located in the tasks folder).
+
+file: gulp-wp.config.js
+
+```javascript
+module.exports = {
+	plugin: 'plugin-file.php', // Optional: explicitly specify your main plugin file with header info
+	tasks: {
+		scripts: {
+			src: 'foo/styles',
+			dest: 'bar/styles',
+		},
+		styles: {
+			src: 'foo/scripts',
+			dest: 'bar/scripts',
+		},
+		translate: {
+			dest: 'translations',
+		},
+	},
+};
+```
 
 ## Tasks
 
@@ -215,6 +246,7 @@ Generate a `.pot` file for your project.
 
 Features:
   * [gulp-wp-pot](https://www.npmjs.com/package/gulp-wp-pot) Pot file generator
+  * Gets `package` and `text-domain` from your project's theme/plugin header
 
 > This task does not translate your project into other languages. It simply sets up the translation file which can then be used to translate your project with a tool like [Poedit](https://poedit.net/)!
 
@@ -252,6 +284,29 @@ exports.build = gulp.series( 'clean', gulp.parallel( 'scripts', 'styles', 'trans
 Now, instead of running `gulp-wp`, you can run `gulp` directly (as long as you've also installed the [gulp-cli package](https://www.npmjs.com/package/gulp-cli) globally, otherwise you can run `npx gulp`).
 
 > Note that you really shouldn't need `gulpfile.babel.js` anymore if you're using a recent Node.js version. The only thing you can't currently do is use `import` and `export`. Just use `require` and `module.exports`.
+
+#### Gulpfile Config
+
+If you are providing a custom `gulpfile.js`, you can pass a custom config object as the second parameter when `require`-ing `gulp-wp`:
+
+```javascript
+const gulp = require('gulp');
+
+const config = {
+	plugin: 'plugin-file.php',
+	tasks: {
+		styles: {
+			src: 'src/sass',
+		},
+		scripts: {
+			src: 'src/js',
+		}
+	}
+};
+
+// Require GulpWP and pass your custom config
+const gulpWP = require('@b.d/gulp-wp')(gulp, config);
+```
 
 ## Rationale
 
