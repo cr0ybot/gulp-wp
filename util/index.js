@@ -22,6 +22,7 @@ const notify = require( 'gulp-notify' );
 const plumber = require( 'gulp-plumber' );
 
 c.enabled = require( 'color-support' ).hasBasic;
+
 notify.logLevel( 0 );
 
 /**
@@ -190,10 +191,12 @@ const loadTasks = () => {
 };
 
 module.exports = {
+	c,
 	dependentsConfig,
 	getPluginFile,
 	handleStreamError,
 	isTheme,
 	loadConfig,
 	loadTasks,
+	log,
 };

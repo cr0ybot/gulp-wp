@@ -4,9 +4,11 @@
  * Clean build folders
  */
 
-const c = require( 'ansi-colors' );
+// External
 const del = require( 'del' );
-const log = require( 'fancy-log' );
+
+// Internal
+const { c, log } = require( '../util' );
 
 module.exports = {
 	task: ( gulp, {}, registry ) => {

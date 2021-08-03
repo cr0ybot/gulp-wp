@@ -13,7 +13,7 @@ const sort = require( 'gulp-sort' );
 const wpPot = require( 'gulp-wp-pot' );
 
 // Internal
-const { handleStreamError, logEntries } = require( '../util' );
+const { handleStreamError } = require( '../util' );
 
 module.exports = {
 	task: ( gulp, { src, dest }, registry ) => {
