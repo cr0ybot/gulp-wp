@@ -116,11 +116,9 @@ project (root)
       └╴{subfolders}
 ```
 
-All files within the `styles` and `scripts` folders in `src` will be treated as separate entrypoints to transform, meaning they will be processed by the workflow and output to the appropriate folders in `dist`, including their sourcemap files.
+Only files within the root of the `styles` and `scripts` folders in `src` will be treated as separate entrypoints to transform, meaning they will be processed by the workflow and output to the appropriate folders in `dist`, including their sourcemap files. Subfolders in `styles` and `scripts` are not processed directly. Use subfolders to organize your partials or modules and import them where necessary into an entrypoint file in the root of the folder. Note that it is still best practice to prepend Sass partial file names with "_".
 
 > Yes, sourcemaps are output in development as well as production. It doesn't hurt performance and is helpful for production debuging and fellow developers learning our craft.
-
-Subfolders in `styles` and `scripts` are not processed directly. Use subfolders to organize your partials or modules and import them where necessary into an entrypoint file in the root of the folder.
 
 #### Theme or Plugin
 
@@ -160,13 +158,13 @@ BROWSERSYNC_NOTIFY=true
 
 If it's really necessary, you *can* provide a configuration object to Gulp WP, either via a `gulp-wp.config.js` file in the root of your project, or as the second parameter when requiring `gulp-wp` in a custom `gulpfile.js` (See [Gulpfile Config](#gulpfile-config)).
 
-There are very few options, and most are geared towards individual task config. Each task contains it's own default configuration in its task file export (located in the tasks folder).
+There are very few options, and most are geared towards individual task config. Each task file contains it's own default configuration in its export object. See [Tasks](#tasks) for default task config.
 
 file: gulp-wp.config.js
 
 ```javascript
 module.exports = {
-	plugin: 'plugin-file.php', // Optional: explicitly specify your main plugin file with header info
+	plugin: 'plugin-file.php', // Optional: explicitly specify your main plugin file that contains header info
 	tasks: {
 		scripts: {
 			src: 'foo/styles',
@@ -224,6 +222,17 @@ Features:
 
 > Using Sass is optional--If you prefer to use PostCSS plugins, refer to this documentation for how to load them via postcss config: https://www.npmjs.com/package/postcss-load-config
 
+Default config:
+
+```javascript
+{
+	src: 'src/styles',
+	dest: 'dist/css',
+	entries: 'src/styles/*.*',
+	includePaths: [ 'node_modules' ],
+}
+```
+
 ### Scripts
 
 ```shell
@@ -235,6 +244,17 @@ Transforms your _script_ source files (`.js`, `.jsx`, `.ts`, `.tsx`, etc) into J
 Features:
   * [@wordpress/scripts](https://www.npmjs.com/package/@wordpress/scripts): Scripts are transformed via Webpack and the official `@wordpress/scripts` config. This provides many benefits, most notably that "asset" files are generated that include a version hash and a dependencies array for enqueuing based on imports of core `@wordpress/*` modules.
   * [gulp-dependents](https://www.npmjs.com/package/gulp-dependents): While this is by default a Sass tool, it has been configured to also handle JavaScript ES6 imports. Only entrypoint files that import the module you just edited will be recompiled.
+
+Default config:
+
+```javascript
+{
+	src: 'src/scripts',
+	dest: 'dist/js',
+	entries: 'src/scripts/*.*',
+	includePaths: [ 'node_modules' ],
+}
+```
 
 ### Translate
 
@@ -249,6 +269,15 @@ Features:
   * Gets `package` and `text-domain` from your project's theme/plugin header
 
 > This task does not translate your project into other languages. It simply sets up the translation file which can then be used to translate your project with a tool like [Poedit](https://poedit.net/)!
+
+Default config:
+
+```javascript
+{
+	src: [ '**/*.php', '!node_modules/**/*', '!**/*.asset.php' ],
+	dest: 'languages',
+}
+```
 
 ### Version
 
