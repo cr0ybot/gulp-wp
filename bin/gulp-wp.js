@@ -5,7 +5,7 @@ const { sync: spawn } = require( 'cross-spawn' );
 
 const { argv, cwd, exit } = process;
 
-const gulpfile = require.resolve( '../gulpfile.js' );
+const gulpfile = require.resolve( '../lib/gulpfile.js' );
 
 const { status } = spawn(
 	resolveBin( 'gulp' ),
