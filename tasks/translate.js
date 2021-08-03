@@ -23,7 +23,7 @@ module.exports = {
 			const projectType = plugin ? 'Plugin' : 'Theme';
 
 			return fileData( metadataFile, {
-				package: `${projectType} Name`,
+				package: `${ projectType } Name`,
 				domain: 'Text Domain',
 			} ).then( ( { domain, package } ) => {
 				// Add metadataFile to src array
@@ -47,7 +47,11 @@ module.exports = {
 							metadataFile,
 						} )
 					)
-					.pipe( gulp.dest( join( dest, `${ domain }.pot` ) ) )
+					.pipe(
+						gulp.dest(
+							join( dest, `${ domain || 'translations' }.pot` )
+						)
+					)
 					.pipe(
 						logFiles( {
 							title: 'translate result:',
