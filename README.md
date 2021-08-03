@@ -50,7 +50,7 @@ npx gulp-wp
 
 This will run the default task, which watches and compiles your files and runs BrowserSync.
 
-> Note that any argument that you can pass to the standard `gulp` command you can pass with `gulp-wp`, with the exception of `--gulpfile` and `--cwd`, since those are used internally to run the appropriate gulpfile. For isntance, you can also use the `--log-level` flag to see debug messages from Gulp WP.
+> Note that any argument that you can pass to the standard `gulp` command you can pass with `gulp-wp`, with the exception of `--gulpfile` and `--cwd`, since those are used internally to run the appropriate gulpfile. For isntance, you can also use the `-LLLL` flag to see debug messages from Gulp WP.
 
 If you'd prefer, you can canonize the tasks as npm scripts in your project's `package.json`:
 
