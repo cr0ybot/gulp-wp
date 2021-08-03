@@ -67,23 +67,28 @@ const getPluginFile = () => {
 	// get all php files in the root of the cwd
 	const pluginFilePaths = glob( './*.php' );
 	// for each file, check the first 8192 bytes for "Plugin Name"
-	//console.log( 'looking for plugin file' );
+	log.debug( 'Looking for main plugin file...' );
 	for ( const path of pluginFilePaths ) {
-		//console.log( 'checking', path );
-
 		try {
 			const header = Buffer.alloc( 8192 );
 			const fd = openSync( path );
 			readSync( fd, header );
 			closeSync( fd );
 			if ( header.indexOf( 'Plugin Name:' ) !== -1 ) {
-				//console.log( 'found plugin:', path );
+				log.debug( 'Found main plugin file:', c.blue( path ) );
 				return path;
 			}
 		} catch ( err ) {
 			// Not this one...
 		}
 	}
+	log.warn(
+		c.yellow(
+			'Not able to locate main plugin file. Make sure you include the required'
+		),
+		c.cyan( 'Plugin Name' ),
+		c.yellow( 'field.' )
+	);
 	return null;
 };
 
