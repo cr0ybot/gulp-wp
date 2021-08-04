@@ -11,7 +11,12 @@ const webpackStream = require( 'webpack-stream' );
 const wpWebpackConfig = require( '@wordpress/scripts/config/webpack.config' );
 
 // Internal
-const { dependentsConfig, handleStreamError, logFiles } = require( '../util' );
+const {
+	changed,
+	dependentsConfig,
+	handleStreamError,
+	logFiles,
+} = require( '../util' );
 
 module.exports = {
 	task: ( gulp, { src, dest, entries, includePaths } ) => {
@@ -36,8 +41,9 @@ module.exports = {
 			delete webpackConfig[ 'entry' ];
 
 			return gulp
-				.src( srcFiles, { since: gulp.lastRun( scripts ) } )
+				.src( srcFiles )
 				.pipe( handleStreamError( 'scripts' ) )
+				.pipe( changed( gulp.lastRun( scripts ) ) )
 				.pipe( dependents( dependentsConfig, { logDependents: true } ) )
 				.pipe( filterEntries )
 				.pipe( logFiles( { task: 'scripts', title: 'entry:' } ) )

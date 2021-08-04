@@ -20,10 +20,35 @@ const { sync: glob } = require( 'glob' );
 const log = require( 'gulplog' );
 const notify = require( 'gulp-notify' );
 const plumber = require( 'gulp-plumber' );
+const through2 = require( 'through2' );
 
 c.enabled = require( 'color-support' ).hasBasic;
 
 notify.logLevel( 0 );
+
+/**
+ * Filter out files that haven't changed since timestamp in a stream.
+ *
+ * Generally, you should pass gulp.lastRun( taskFn ) as the timestamp.
+ * Based on a shortcoming of the gulp.src `since` option: https://github.com/gulpjs/vinyl-fs/issues/226
+ *
+ * @function
+ * @param {number} timestamp Timestamp to check against file modification/creation times
+ */
+const changed = ( timestamp ) => {
+	function filterChanged( file, enc, cb ) {
+		// Skip file if mtime or ctime is less than timestamp
+		if (
+			file.stat &&
+			Math.max( file.stat.mtime, file.stat.ctime ) <= timestamp
+		) {
+			return cb();
+		}
+
+		return cb( null, file );
+	}
+	return through2.obj( filterChanged );
+};
 
 /**
  * Global config used for all "instances" of gulp-dependents, because the first that runs sets the config for all.
@@ -228,6 +253,7 @@ const logFiles = ( options ) => {
 
 module.exports = {
 	c,
+	changed,
 	dependentsConfig,
 	getPluginFile,
 	handleStreamError,

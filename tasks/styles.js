@@ -12,7 +12,12 @@ const sass = require( 'gulp-sass' )( require( 'sass' ) );
 const sassGlob = require( 'gulp-sass-glob' );
 
 // Internal
-const { dependentsConfig, handleStreamError, logFiles } = require( '../util' );
+const {
+	changed,
+	dependentsConfig,
+	handleStreamError,
+	logFiles,
+} = require( '../util' );
 
 module.exports = {
 	task: ( gulp, { src, dest, entries, includePaths } ) => {
@@ -25,9 +30,9 @@ module.exports = {
 			return gulp
 				.src( srcFiles, {
 					sourcemaps: true,
-					since: gulp.lastRun( styles ),
 				} )
 				.pipe( handleStreamError( 'styles' ) )
+				.pipe( changed( gulp.lastRun( styles ) ) )
 				.pipe( sassFilter )
 				.pipe( sassGlob() ) // transform glob imports
 				.pipe( dependents( dependentsConfig, { logDependents: true } ) )
