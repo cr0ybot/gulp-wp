@@ -21,7 +21,7 @@ module.exports = {
 
 		return function watch() {
 			gulp.watch(
-				`${ styles.src }/**/*.*`,
+				styles.watch || `${ styles.src }/**/*.*`,
 				{ cwd: './' },
 				registry.get( 'styles' )
 			)
@@ -56,7 +56,7 @@ module.exports = {
 					);
 				} );
 			gulp.watch(
-				`${ scripts.src }/**/*.*`,
+				scripts.watch || `${ scripts.src }/**/*.*`,
 				{ cwd: './' },
 				registry.get( 'scripts' )
 			)
@@ -92,7 +92,10 @@ module.exports = {
 				} );
 			gulp.watch(
 				translate.watch || translate.src,
-				{ cwd: './' },
+				{
+					cwd: './',
+					ignored: ( path ) => path.includes( 'node_modules' ),
+				},
 				registry.get( 'translate' )
 			);
 		};
