@@ -289,9 +289,108 @@ gulp-wp version
 
 ### Custom Tasks
 
-So, you've installed `gulp-wp` and it's working well for you, except you'd rather it did one of the tasks a little differently, or you need to add your own task to run with the standard `watch` and `build` tasks.
+So, you've installed `gulp-wp` and it's working well for you, except you'd rather it did one of the tasks differently, or you need to add your own task to run with the `dev` and `build` tasks.
 
-Instead of running `gulp-wp` directly, you can instead add your own `gulpfile.js` in the root of your project and `require()` this module, then `export` your custom tasks and even override ones provided by `gulp-wp`:
+This module uses a [custom Gulp registry](https://gulpjs.com/docs/en/advanced/creating-custom-registries/) to load tasks in a special format. Without having to create a `gulpfile.js`, you can define self-contained tasks by adding JS files to a folder named `gulp-wp` in the root of your project. You can even override default Gulp WP tasks by providing a task the same name, just be aware that you will need to rebuild the full task yourself. These JS modules must export an object with a specific interface:
+
+file: gulp-wp/example.js
+
+```javascript
+/**
+ * Note that Gulp WP currently uses CommonJS module format.
+ * You should `require` any node modules necessary that you have installed as
+ * a `dependency` in your `package.json`.
+ */
+module.exports = {
+	/**
+	 * The task property is a function that returns your gulp task function.
+	 * Note that it should only `return` a single function; multiple are shown
+	 * below as examples only.
+	 */
+	task: ( gulp, config, registry ) => {
+		/**
+		 * Example using a task config value and the gulp `done` callback.
+		 */
+		const { who } = config;
+		return function example( done ) {
+			console.log( 'hello', who );
+			done();
+		}
+
+		/**
+		 * Example using task config values and gulp pipes.
+		 */
+		const { src, dest } = config;
+		return function example() {
+			return gulp.src( src )
+				.pipe(/* do pipe things */)
+				.pipe( gulp.dest( dest ) );
+		}
+
+		/**
+		 * Example using series/parallel and dependent tasks
+		 */
+		return function example() {
+			return gulp.series(
+				registry.get( 'clean' ),
+				gulp.parallel(
+					registry.get( 'scripts' ),
+					registry.get( 'styles' )
+				)
+			);
+		}
+
+		/**
+		 * Example using config props of dependent tasks.
+		 * Only the configs of tasks listed in `dependencies` can be relied on to
+		 * exist in `registry.config.tasks`.
+		 */
+		const { scripts, styles } = registry.config.tasks;
+		return function example(done) {
+			console.log( 'scripts src', scripts.src );
+			console.log( 'styles src', styles.src );
+			done();
+		}
+	},
+	/**
+	 * Default config is defined with the task and is overridable at the project
+	 * level config. In this case, it would be located at `config.tasks.example`.
+	 */
+	config: {
+		who: 'world',
+		src: 'foo/*',
+		dest: 'bar',
+	},
+	/**
+	 * List all tasks that are used or referenced in this task, even if it's just
+	 * for a config property, and even if the dependent task already has its own
+	 * dependency on another referenced task.
+	 */
+	dependencies: [ 'clean', 'scripts', 'styles' ],
+};
+```
+
+> You can change the folder from which local tasks should be loaded via the config property `taskFolder`. This should be a path string relative to your project root, though it can instead be an absolute path.
+
+When overriding a Gulp WP task, you can import the default task directly to access it's properties if needed:
+
+```javascript
+const { config, dependencies } = require( '@b.d/gulp-wp/tasks/example' );
+module.exports = {
+	task: // your override task wrapper here
+	config: {
+		...config,
+		foo: 'bar',
+	},
+	dependencies: [ ...dependencies, 'baz' ],
+}
+```
+
+> There is currently no way to insert custom functionality into a default task, so it needs to be rebuilt the way you want it to work. It could be helpful to copy the task file from the Gulp WP tasks folder as a starting point.
+
+### Using Gulp Directly
+
+Instead of running `gulp-wp`, you can instead add your own `gulpfile.js` in the root of your project and `require()` this module, then `export` your custom tasks and even override ones provided by `gulp-wp`:
 
 ```javascript
 const gulp = require('gulp');
@@ -314,6 +413,8 @@ Now, instead of running `gulp-wp`, you can run `gulp` directly (as long as you'v
 
 > Note that you really shouldn't need `gulpfile.babel.js` anymore if you're using a recent Node.js version. The only thing you can't currently do is use `import` and `export`. Just use `require` and `module.exports`.
 
+You can still use the task files as described in [Custom Tasks](#custom-tasks).
+
 #### Gulpfile Config
 
 If you are providing a custom `gulpfile.js`, you can pass a custom config object as the second parameter when `require`-ing `gulp-wp`:
@@ -322,15 +423,7 @@ If you are providing a custom `gulpfile.js`, you can pass a custom config object
 const gulp = require('gulp');
 
 const config = {
-	plugin: 'plugin-file.php',
-	tasks: {
-		styles: {
-			src: 'src/sass',
-		},
-		scripts: {
-			src: 'src/js',
-		}
-	}
+	// your config here
 };
 
 // Require GulpWP and pass your custom config
