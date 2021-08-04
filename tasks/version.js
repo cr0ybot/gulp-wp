@@ -6,6 +6,7 @@
 const { basename, dirname, extname, resolve } = require( 'path' );
 const { cwd } = require( 'process' );
 const { promisify } = require( 'util' );
+const { readFileSync } = require( 'fs' );
 
 // External
 const fileData = promisify( require( 'wp-get-file-data' ) );
@@ -26,7 +27,10 @@ module.exports = {
 
 			// Get version from package.json
 			if ( filename === 'package.json' ) {
-				const { version } = require( resolve( cwd(), 'package.json' ) );
+				// NOTE: can't just `require` package.json because successive calls will use a cached version
+				const { version } = JSON.parse(
+					readFileSync( resolve( cwd(), 'package.json' ) )
+				);
 				return Promise.resolve( version );
 			}
 
