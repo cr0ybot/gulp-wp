@@ -8,9 +8,19 @@ if ( process.env.NOTIFY === 'false' ) {
 	process.env.DISABLE_NOTIFIER = true;
 }
 
+// Node
+const { resolve } = require( 'path' );
+
 // Internal
 const GulpWPRegistry = require( './lib/registry' );
-const { getPluginFile, isTheme, loadConfig, loadTasks } = require( './util' );
+const {
+	c,
+	getPluginFile,
+	isTheme,
+	loadConfig,
+	loadTasks,
+	log,
+} = require( './util' );
 
 module.exports = ( gulp, config = {} ) => {
 	const localConfig = loadConfig();
@@ -29,7 +39,18 @@ module.exports = ( gulp, config = {} ) => {
 		}
 	}
 
-	const tasks = loadTasks();
+	// Load Gulp WP default tasks
+	const gulpWPTasks = loadTasks( resolve( __dirname, 'tasks' ) );
+	log.debug(
+		'Loaded Gulp WP tasks:',
+		c.cyan( Object.keys( gulpWPTasks ).join( ' ' ) )
+	);
+	const localTasks = loadTasks( config.taskFolder || 'gulp-wp' );
+	log.debug(
+		'Loaded local tasks:',
+		c.cyan( Object.keys( localTasks ).join( ' ' ) )
+	);
+	const tasks = Object.assign( {}, gulpWPTasks, localTasks );
 
 	// Register our custom registry
 	const gulpWP = new GulpWPRegistry( gulp, tasks, config );

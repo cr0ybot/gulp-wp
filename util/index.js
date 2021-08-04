@@ -8,10 +8,9 @@ const {
 	closeSync,
 	constants: fsConstants,
 	openSync,
-	readdirSync,
 	readSync,
 } = require( 'fs' );
-const { basename, extname, join } = require( 'path' );
+const { basename, join, resolve } = require( 'path' );
 const { cwd } = require( 'process' );
 
 // External
@@ -171,18 +170,24 @@ const loadConfig = () => {
 };
 
 /**
- * Load predefined tasks.
+ * Load tasks files from a directory.
  *
  * @function
+ * @param {string} dirPath Path to tasks folder
  * @returns {object} Object with tasks as properties
  */
-const loadTasks = () => {
-	// Get files from tasks folder
-	// TODO: get task files from local project?
-	const taskFiles = glob( '*.js', { cwd: join( __dirname, '..', 'tasks' ) } );
+const loadTasks = ( dirPath ) => {
+	if ( typeof dirPath !== 'string' ) {
+		throw new Error( 'No path provided to loadTasks.' );
+	}
+
+	const taskFiles = glob( '*.js', { cwd: dirPath } );
+	if ( taskFiles.length === 0 ) {
+		return {};
+	}
 	return taskFiles.reduce( ( acc, file ) => {
 		const taskName = basename( file, '.js' );
-		const taskInfo = require( `../tasks/${ taskName }` );
+		const taskInfo = require( resolve( dirPath, taskName ) );
 
 		// Validate task function exists
 		if (
