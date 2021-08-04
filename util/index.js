@@ -172,11 +172,13 @@ const loadConfig = () => {
 /**
  * Load tasks files from a directory.
  *
+ * TODO: second parameter for ignore tasks array so that we can load local tasks first and skip loading the equivalent Gulp WP task
+ *
  * @function
  * @param {string} dirPath Path to tasks folder
  * @returns {object} Object with tasks as properties
  */
-const loadTasks = ( dirPath ) => {
+const loadTasks = ( dirPath, ignore = [] ) => {
 	if ( typeof dirPath !== 'string' ) {
 		throw new Error( 'No path provided to loadTasks.' );
 	}
@@ -187,6 +189,12 @@ const loadTasks = ( dirPath ) => {
 	}
 	return taskFiles.reduce( ( acc, file ) => {
 		const taskName = basename( file, '.js' );
+
+		// Skip if found in ignore list
+		if ( ignore.includes( taskName ) ) {
+			return acc;
+		}
+
 		const taskInfo = require( resolve( dirPath, taskName ) );
 
 		// Validate task function exists

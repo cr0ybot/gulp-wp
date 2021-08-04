@@ -39,17 +39,25 @@ function init( gulp, config = {} ) {
 		}
 	}
 
-	// Load Gulp WP default tasks
-	const gulpWPTasks = loadTasks( resolve( __dirname, 'tasks' ) );
-	log.debug(
-		'Loaded Gulp WP tasks:',
-		c.cyan( Object.keys( gulpWPTasks ).join( ' ' ) )
-	);
-	const localTasks = loadTasks( config.taskFolder || 'gulp-wp' );
+	// Load local tasks first so we can ignore tasks meant to be overridden
+	const localTaskFolder = config.taskFolder || 'gulp-wp';
+	log.debug( 'Loading local tasks from', c.blue( localTaskFolder ) );
+	const localTasks = loadTasks( localTaskFolder );
 	log.debug(
 		'Loaded local tasks:',
 		c.cyan( Object.keys( localTasks ).join( ' ' ) )
 	);
+
+	// Load Gulp WP default tasks
+	const gulpWPTasks = loadTasks(
+		resolve( __dirname, 'tasks' ),
+		Object.keys( localTasks )
+	);
+	log.debug(
+		'Loaded Gulp WP tasks:',
+		c.cyan( Object.keys( gulpWPTasks ).join( ' ' ) )
+	);
+
 	const tasks = Object.assign( {}, gulpWPTasks, localTasks );
 
 	// Register our custom registry
