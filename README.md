@@ -203,7 +203,38 @@ Runs `build`, then watches your files for changes, incimentally recompiles, and 
 gulp-wp build
 ```
 
-Runs `styles`, `scripts`, and `translate` in parallel.
+Runs `clean` and then `styles`, `scripts`, and `translate` in parallel.
+
+### Clean
+
+```shell
+gulp-wp clean
+```
+
+Cleans the `dest` folders of `styles` and `scripts`.
+
+### Scripts
+
+```shell
+gulp-wp scripts
+```
+
+Transforms your _script_ source files (`.js`, `.jsx`, `.ts`, `.tsx`, etc) into JS for the browser.
+
+Features:
+  * [@wordpress/scripts](https://www.npmjs.com/package/@wordpress/scripts): Scripts are transformed via Webpack and the official `@wordpress/scripts` config. This provides many benefits, most notably that "asset" files are generated that include a version hash and a dependencies array for enqueuing based on imports of core `@wordpress/*` modules.
+  * [gulp-dependents](https://www.npmjs.com/package/gulp-dependents): While this is by default a Sass tool, it has been configured to also handle JavaScript ES6 imports. Only entrypoint files that import the module you just edited will be recompiled.
+
+Default config:
+
+```javascript
+{
+	src: 'src/scripts',
+	dest: 'dist/js',
+	entries: 'src/scripts/*.*',
+	includePaths: [ 'node_modules' ],
+}
+```
 
 ### Styles
 
@@ -229,29 +260,6 @@ Default config:
 	src: 'src/styles',
 	dest: 'dist/css',
 	entries: 'src/styles/*.*',
-	includePaths: [ 'node_modules' ],
-}
-```
-
-### Scripts
-
-```shell
-gulp-wp scripts
-```
-
-Transforms your _script_ source files (`.js`, `.jsx`, `.ts`, `.tsx`, etc) into JS for the browser.
-
-Features:
-  * [@wordpress/scripts](https://www.npmjs.com/package/@wordpress/scripts): Scripts are transformed via Webpack and the official `@wordpress/scripts` config. This provides many benefits, most notably that "asset" files are generated that include a version hash and a dependencies array for enqueuing based on imports of core `@wordpress/*` modules.
-  * [gulp-dependents](https://www.npmjs.com/package/gulp-dependents): While this is by default a Sass tool, it has been configured to also handle JavaScript ES6 imports. Only entrypoint files that import the module you just edited will be recompiled.
-
-Default config:
-
-```javascript
-{
-	src: 'src/scripts',
-	dest: 'dist/js',
-	entries: 'src/scripts/*.*',
 	includePaths: [ 'node_modules' ],
 }
 ```
@@ -286,6 +294,14 @@ gulp-wp version
 ```
 
 // TODO
+
+### Watch
+
+```shell
+gulp-wp watch
+```
+
+Not meant to be run directly. This task is run by `dev` to watch files related to `scripts`, `styles`, and `translate`. You can pass a `watch` config parameter to any of those tasks to influence what files this task watches.
 
 ### Custom Tasks
 
