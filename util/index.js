@@ -243,7 +243,8 @@ const loadTasks = ( dirPath, ignore = [] ) => {
  */
 const logFiles = ( options ) => {
 	const { task, title: desc } = options;
-	const title = `${ c.cyan( task ) } ${ desc }`;
+	const append = desc || 'files:';
+	const title = `${ c.cyan( task ) } ${ append }`;
 	options = Object.assign( {}, options, {
 		title,
 		logger: log.info,
