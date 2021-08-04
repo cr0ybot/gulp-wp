@@ -9,11 +9,12 @@ module.exports = {
 			gulp.parallel(
 				registry.get( 'styles' ),
 				registry.get( 'scripts' ),
-				registry.get( 'translate' )
+				registry.get( 'translate' ),
+				registry.get( 'version' )
 			)
 		);
 
 		return build;
 	},
-	dependencies: [ 'clean', 'styles', 'scripts', 'translate' ],
+	dependencies: [ 'clean', 'styles', 'scripts', 'translate', 'version' ],
 };

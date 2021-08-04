@@ -16,10 +16,12 @@ const { c, log } = require( '../util' );
 module.exports = {
 	task: ( gulp, {}, registry ) => {
 		const {
-			tasks: { scripts, styles, translate },
+			plugin,
+			tasks: { scripts, styles, translate, version },
 		} = registry.config;
 
 		return function watch() {
+			// Watch styles
 			gulp.watch(
 				styles.watch || `${ styles.src }/**/*.*`,
 				{ cwd: './' },
@@ -55,6 +57,8 @@ module.exports = {
 						}
 					);
 				} );
+
+			// Watch scripts
 			gulp.watch(
 				scripts.watch || `${ scripts.src }/**/*.*`,
 				{ cwd: './' },
@@ -90,6 +94,8 @@ module.exports = {
 						}
 					);
 				} );
+
+			// Watch PHP for translate
 			gulp.watch(
 				translate.watch || translate.src,
 				{
@@ -98,7 +104,10 @@ module.exports = {
 				},
 				registry.get( 'translate' )
 			);
+
+			// Watch version
+			gulp.watch( version.src, { cwd: './' }, registry.get( 'version' ) );
 		};
 	},
-	dependencies: [ 'scripts', 'styles', 'translate' ],
+	dependencies: [ 'scripts', 'styles', 'translate', 'version' ],
 };
