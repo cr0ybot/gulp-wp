@@ -5,7 +5,7 @@
  */
 
 // Node
-const { dirname, join, parse, relative, resolve } = require( 'path' );
+const { dirname, parse, relative, resolve } = require( 'path' );
 
 // External
 const del = require( 'del' );
@@ -32,21 +32,24 @@ module.exports = {
 						'src deleted:',
 						c.blue( filepath )
 					);
+					// Get the relative path of the file from it's src root
 					const relPath = relative(
-						resolve( dirname( styles.src ) ),
-						join(
+						resolve( styles.src ),
+						resolve(
 							dirname( filepath ),
 							`${ parse( filepath ).name }.css`
 						)
 					);
+					// Put the relative path in the context of the dest root
 					const destPath = resolve( styles.dest, relPath );
+					// Delete the dest file and any .map file of the same name
 					del( [ destPath, `${ destPath }.map` ] ).then(
 						( paths ) => {
 							for ( const path of paths ) {
 								log.debug(
 									c.cyan( 'styles' ),
 									'removed dest file:',
-									c.blue( destPath )
+									c.blue( path )
 								);
 							}
 						}
@@ -64,14 +67,17 @@ module.exports = {
 						'src deleted:',
 						c.blue( filepath )
 					);
+					// Get the relative path of the file from it's src root
 					const relPath = relative(
-						resolve( dirname( scripts.src ) ),
-						join(
+						resolve( scripts.src ),
+						resolve(
 							dirname( filepath ),
 							`${ parse( filepath ).name }.js`
 						)
 					);
+					// Put the relative path in the context of the dest root
 					const destPath = resolve( scripts.dest, relPath );
+					// Delete the dest file and any .map file of the same name
 					del( [ destPath, `${ destPath }.map` ] ).then(
 						( paths ) => {
 							for ( const path of paths ) {
