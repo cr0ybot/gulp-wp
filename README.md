@@ -70,7 +70,7 @@ The above allows you to run the default task via `npm start` and the build task 
 
 > Note that usage is different if you want to customize the tasks or add your own. See [Customization](#customization) for details.
 
-#### Available Tasks
+#### Main Tasks
 
 There are several tasks available for individual aspects of development. Generally speaking, you probably shouldn't need to run them individually, since they are run as needed during the `watch` and `build` tasks.
 
@@ -85,7 +85,7 @@ Task | Description
 [translate](#translate) | Runs `wp-pot` to create translation files.
 [version](#version) | Copies version number updates from `package.json` to your theme's `style.css` file or your plugin's main php file.
 
-> See the [Tasks](#tasks) section below for more details about each task.
+> See the [Tasks](#tasks) section below for additional tasks and more details.
 
 ### Project Structure
 
@@ -293,7 +293,31 @@ Default config:
 gulp-wp version
 ```
 
-// TODO
+Copies the version number from `package.json` to your theme's `style.css` header or your plugin's main PHP file header. This allows for using [npm version](https://docs.npmjs.com/cli/v7/commands/npm-version) to manage version changes, though it requires some additional setup in your `package.json` to be useful:
+
+```json
+{
+	...
+	"scripts": {
+		"version": "gulp-wp build && git add --all",
+		...
+	}
+}
+```
+
+> Note that if you are using a custom `gulpfile.js`, replace "gulp-wp" with "gulp".
+
+Now you can run `npm version patch` to bump the patch number from eg. 1.0.0 to 1.0.1, after which the build task will run and modified files will be added to your git index (the `version` script above), and then the commit will be tagged.
+
+If you'd rather control the version number via the `style.css` or main plugin PHP file, you can pass that file as the `src` config parameter. This will reverse the direction so that the version number is injected into `package.json`, but the `npm version` command will not work.
+
+Default config:
+
+```javascript
+{
+	src: 'package.json',
+}
+```
 
 ### Watch
 
