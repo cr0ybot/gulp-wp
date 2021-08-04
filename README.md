@@ -5,7 +5,7 @@ Gulp WP is a single-dependency Gulp-based workflow script for WordPress themes a
 Gulp WP is:
 
   * :arrows_clockwise: __Reusable__: It's a collection of workflow scripts that you can drop into any project without having to untangle it from other setups.
-  * :left_right_arrow: __Extendable__: It's built with Gulp and can be used as-is or hooked into to customize or add new workflows for your specific project.
+  * :left_right_arrow: __Extendable__: It's built with Gulp 4 and can be used as-is or hooked into to customize or add new workflows for your specific project.
   * :arrow_up: __Updatable__: One single NPM dependency to update when needed!
   * :ok: __Sensible__: It comes with "sensible defaults", and uses the official [@wordpress/scripts](https://www.npmjs.com/package/@wordpress/scripts) package for JS with some conveniences added for multiple entrypoints.
 
