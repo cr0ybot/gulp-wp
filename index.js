@@ -22,7 +22,7 @@ const {
 	log,
 } = require( './util' );
 
-module.exports = ( gulp, config = {} ) => {
+function init( gulp, config = {} ) {
 	const localConfig = loadConfig();
 	config = Object.assign( {}, localConfig, config );
 
@@ -57,4 +57,9 @@ module.exports = ( gulp, config = {} ) => {
 	gulp.registry( gulpWP );
 
 	return gulpWP;
-};
+}
+
+// Expose GulpWPRegistry for advanced use
+init.GulpWPRegistry = GulpWPRegistry;
+
+module.exports = init;
