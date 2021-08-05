@@ -369,16 +369,16 @@ module.exports = {
 
 		/**
 		 * Example using series/parallel and dependent tasks
+		 * Note that the gulp.series or gulp.parallel must be returned directly.
 		 */
-		return function example() {
-			return gulp.series(
-				registry.get( 'clean' ),
-				gulp.parallel(
-					registry.get( 'scripts' ),
-					registry.get( 'styles' )
-				)
-			);
-		}
+		const example = gulp.series(
+			registry.get( 'clean' ),
+			gulp.parallel(
+				registry.get( 'scripts' ),
+				registry.get( 'styles' )
+			)
+		);
+		return example;
 
 		/**
 		 * Example using config props of dependent tasks.
@@ -393,7 +393,7 @@ module.exports = {
 		}
 	},
 	/**
-	 * Default config is defined with the task and is overridable at the project
+	 * Default config is defined with the task and is overridable in the project
 	 * level config. In this case, it would be located at `config.tasks.example`.
 	 */
 	config: {
