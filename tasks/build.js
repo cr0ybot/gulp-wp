@@ -3,18 +3,38 @@
  */
 
 module.exports = {
-	task: ( gulp, {}, registry ) => {
-		const build = gulp.series(
-			registry.get( 'clean' ),
-			gulp.parallel(
-				registry.get( 'styles' ),
-				registry.get( 'scripts' ),
-				registry.get( 'translate' ),
-				registry.get( 'version' )
-			)
-		);
+	task: (
+		gulp,
+		{
+			preBuild: preBuildTasks,
+			build: buildTasks,
+			postBuild: postBuildTasks,
+		},
+		registry
+	) => {
+		function maybeParallel( tasks ) {
+			if ( ! Array.isArray( tasks ) || tasks.length === 0 ) {
+				return [];
+			}
+
+			return [ gulp.parallel( ...tasks ) ];
+		}
+
+		// Build main series array conditionally
+		const buildSeries = [
+			...maybeParallel( preBuildTasks ),
+			...maybeParallel( buildTasks ),
+			...maybeParallel( postBuildTasks ),
+		];
+
+		const build = gulp.series( ...buildSeries );
 
 		return build;
+	},
+	config: {
+		preBuild: [ 'clean' ],
+		build: [ 'styles', 'scripts', 'translate', 'version' ],
+		postBuild: [],
 	},
 	dependencies: [ 'clean', 'styles', 'scripts', 'translate', 'version' ],
 };
