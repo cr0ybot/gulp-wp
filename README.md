@@ -229,7 +229,7 @@ Default config:
 
 ```javascript
 {
-	src: 'src/scripts',
+	src: 'src/scripts/**/*.*',
 	dest: 'dist/js',
 	entries: 'src/scripts/*.*',
 	includePaths: [ 'node_modules' ],
@@ -257,7 +257,7 @@ Default config:
 
 ```javascript
 {
-	src: 'src/styles',
+	src: 'src/styles/**/*.*',
 	dest: 'dist/css',
 	entries: 'src/styles/*.*',
 	includePaths: [ 'node_modules' ],
