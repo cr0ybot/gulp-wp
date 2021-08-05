@@ -20,9 +20,6 @@ const {
 
 module.exports = {
 	task: ( gulp, { src, dest, entries, includePaths } ) => {
-		const srcFiles = `${ src }/**/*.*`;
-		includePaths.push( src );
-
 		return function scripts( done ) {
 			const filterEntries = filter( entries );
 
@@ -41,7 +38,7 @@ module.exports = {
 			delete webpackConfig[ 'entry' ];
 
 			return gulp
-				.src( srcFiles )
+				.src( src )
 				.pipe( handleStreamError( 'scripts' ) )
 				.pipe( changed( gulp.lastRun( scripts ) ) )
 				.pipe( dependents( dependentsConfig, { logDependents: true } ) )
@@ -60,7 +57,7 @@ module.exports = {
 		};
 	},
 	config: {
-		src: 'src/scripts',
+		src: 'src/scripts/**/*.*',
 		dest: 'dist/js',
 		entries: 'src/scripts/*.*',
 		includePaths: [ 'node_modules' ],

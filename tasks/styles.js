@@ -21,14 +21,12 @@ const {
 
 module.exports = {
 	task: ( gulp, { src, dest, entries, includePaths } ) => {
-		const srcFiles = `${ src }/**/*.*`;
-
 		return function styles() {
 			const sassFilter = filter( '*.s[a|c]ss', { restore: true } );
 			const filterEntries = filter( entries );
 
 			return gulp
-				.src( srcFiles, {
+				.src( src, {
 					sourcemaps: true,
 				} )
 				.pipe( handleStreamError( 'styles' ) )
@@ -56,7 +54,7 @@ module.exports = {
 		};
 	},
 	config: {
-		src: 'src/styles',
+		src: 'src/styles/**/*.*',
 		dest: 'dist/css',
 		entries: 'src/styles/*.*',
 		includePaths: [ 'node_modules' ],
