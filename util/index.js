@@ -242,12 +242,12 @@ const loadTasks = ( dirPath, ignore = [] ) => {
  * File logging utility
  */
 const logFiles = ( options ) => {
-	const { task, title: desc } = options;
+	const { logLevel = 'info', task, title: desc } = options;
 	const append = desc || 'files:';
 	const title = `${ c.cyan( task ) } ${ append }`;
 	options = Object.assign( {}, options, {
 		title,
-		logger: log.info,
+		logger: log[ logLevel ],
 	} );
 	return debug( options );
 };
