@@ -31,11 +31,18 @@ module.exports = {
 				} )
 				.pipe( handleStreamError( 'styles' ) )
 				.pipe( changed( gulp.lastRun( styles ) ) )
-				.pipe( sassFilter )
-				.pipe( sassGlob() ) // transform glob imports
+				.pipe(
+					logFiles( {
+						logLevel: 'debug',
+						task: 'styles',
+						title: 'file:',
+					} )
+				)
+				.pipe( sassGlob() ) // transform sass glob imports
 				.pipe( dependents( dependentsConfig, { logDependents: true } ) )
 				.pipe( filterEntries )
 				.pipe( logFiles( { task: 'styles', title: 'entry:' } ) )
+				.pipe( sassFilter )
 				.pipe(
 					sass.sync( {
 						includePaths,
