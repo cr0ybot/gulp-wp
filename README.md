@@ -327,6 +327,24 @@ gulp-wp watch
 
 Not meant to be run directly. This task is run by `dev` to watch files related to `scripts`, `styles`, and `translate`. You can pass a `watch` config parameter to any of those tasks to influence what files this task watches.
 
+### Zip
+
+Default config:
+
+```javascript
+{
+	src: [
+		'**/*', // all project files
+		'!**/.*', // ignore dotfiles
+		'!**/_*', // ignore partial files
+		'!{node_modules,node_modules/**/*}', // ignore node_modules
+		'!{package.json,package-lock.json,yarn.lock}', // ignore npm/yarn files
+		'!{gulp*,gulp**/*}', // ignore anything that starts with gulp
+	],
+	dest: '../',
+}
+```
+
 ### Custom Tasks
 
 So, you've installed `gulp-wp` and it's working well for you, except you'd rather it did one of the tasks differently, or you need to add your own task to run with the `dev` and `build` tasks.
