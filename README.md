@@ -229,9 +229,9 @@ Default config:
 
 ```javascript
 {
-	src: 'src/scripts/**/*.*',
+	src: 'src/scripts/**/*.*', // all script source files for dependency tree
 	dest: 'dist/js',
-	entries: 'src/scripts/*.*',
+	entries: 'src/scripts/*.*', // files that are entrypoints
 	includePaths: [ 'node_modules' ],
 }
 ```
@@ -257,9 +257,9 @@ Default config:
 
 ```javascript
 {
-	src: 'src/styles/**/*.*',
+	src: 'src/styles/**/*.*', // all style source files for dependency tree
 	dest: 'dist/css',
-	entries: 'src/styles/*.*',
+	entries: 'src/styles/*.*', // files that are entrypoints
 	includePaths: [ 'node_modules' ],
 }
 ```
