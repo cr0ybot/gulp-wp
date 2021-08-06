@@ -442,13 +442,19 @@ module.exports = {
 		who: 'world',
 		src: 'foo/*',
 		dest: 'bar',
+		someTask: 'zip',
 	},
 	/**
 	 * List all tasks that are used or referenced in this task, even if it's just
 	 * for a config property, and even if the dependent task already has its own
 	 * dependency on another referenced task.
+	 * Also accepts a function that returns an array.
 	 */
 	dependencies: [ 'clean', 'scripts', 'styles' ],
+	dependencies: ( config ) => {
+		// Build dependencies array with resolved config as input
+		return [ 'clean', 'scripts', 'styles', config.someTask ];
+	},
 };
 ```
 
