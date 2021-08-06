@@ -23,7 +23,7 @@ It is also :cool: , :new: , & :free: !
 During this package's development, it can be installed directly from the `develop` branch on GitHub:
 
 ```shell
-npm install --save-dev https://github.com/BlackbirdDigital/gulp-wp.git#develop
+npm install https://github.com/BlackbirdDigital/gulp-wp.git#develop
 ```
 
 It can also be installed by cloning the repo locally and linking to it in your project. This is handy if you intend to work on this package:
@@ -31,13 +31,13 @@ It can also be installed by cloning the repo locally and linking to it in your p
 ```shell
 git clone --branch develop https://github.com/BlackbirdDigital/gulp-wp.git
 cd /path/to/project
-npm install --save-dev /path/to/cloned/gulp-wp
+npm install /path/to/cloned/gulp-wp
 ```
 
 The intended installation after publishing on npm will look like:
 
 ```shell
-npm install --save-dev @b.d/gulp-wp
+npm install @b.d/gulp-wp
 ```
 
 ### Usage
