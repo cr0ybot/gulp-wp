@@ -213,7 +213,7 @@ const { config } = require( '@b.d/gulp-wp/tasks/build' );
 module.exports = {
 	tasks: {
 		build: {
-			postBuild: [ ...config.postBuild, 'example' ],
+			preBuild: [ ...config.preBuild, 'example' ],
 		},
 	},
 };
@@ -235,7 +235,15 @@ Default config:
 gulp-wp clean
 ```
 
-Cleans the `dest` folders of `styles` and `scripts`.
+Cleans the `dest` folders of specified tasks.
+
+Default config:
+
+```javascript
+{
+	cleanDest: [ 'scripts', 'styles' ],
+}
+```
 
 ### Scripts
 
@@ -254,6 +262,7 @@ Default config:
 ```javascript
 {
 	src: 'src/scripts/**/*.*', // all script source files for dependency tree
+	srcBase: 'src/scripts', // for watch task to mirror deletions
 	dest: 'dist/js',
 	entries: 'src/scripts/*.*', // files that are entrypoints
 	includePaths: [ 'node_modules' ],
@@ -282,6 +291,7 @@ Default config:
 ```javascript
 {
 	src: 'src/styles/**/*.*', // all style source files for dependency tree
+	srcBase: 'src/styles', // for watch task to mirror deletions
 	dest: 'dist/css',
 	entries: 'src/styles/*.*', // files that are entrypoints
 	includePaths: [ 'node_modules' ],
@@ -349,7 +359,28 @@ Default config:
 gulp-wp watch
 ```
 
-Not meant to be run directly. This task is run by `dev` to watch files related to `scripts`, `styles`, and `translate`. You can pass a `watch` config parameter to any of those tasks to influence what files this task watches.
+Not meant to be run directly. This task is run by `dev` to watch the `src` of specified tasks. You can include a `watch` config parameter in any of those tasks to influence what files this task watches.
+
+If your task only compiles changed files and doesn't clean it's own `dest` folder on every run, you probably want the `watch` task to remove files from `dest` when you delete the `src` file. This API is subject to change, but for now, you can specify an object instead of a task name string and set the `mirrorDeletion` property to an array of file extensions to attemtp to delete (see config example below). If the specified task has a `srcBase` config property, that will be used to determine the relative path of the `dest` file to delete (see [scripts](#scripts) and [styles](#styles)).
+
+Default config:
+
+```javascript
+{
+	tasks: [
+		{
+			task: 'scripts',
+			mirrorDeletion: [ '.js', '.js.map' ],
+		},
+		{
+			task: 'styles',
+			mirrorDeletion: [ '.css', '.css.map' ],
+		},
+		'translate',
+		'version',
+	],
+}
+```
 
 ### Zip
 
