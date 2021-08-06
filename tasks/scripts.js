@@ -37,23 +37,21 @@ module.exports = {
 			// Remove config props that may interfere with webpackStream
 			delete webpackConfig[ 'entry' ];
 
-			return gulp
-				.src( src )
-				.pipe( handleStreamError( 'scripts' ) )
-				.pipe( changed( gulp.lastRun( scripts ) ) )
-				.pipe( dependents( dependentsConfig, { logDependents: true } ) )
-				.pipe( filterEntries )
-				.pipe( logFiles( { task: 'scripts', title: 'entry:' } ) )
-				.pipe( named() )
-				.pipe(
-					webpackStream( webpackConfig, webpack, ( err, stats ) => {
-						if ( err ) {
-							console.error( err );
-							done();
-						}
-					} )
-				)
-				.pipe( gulp.dest( dest ) );
+			return (
+				gulp
+					.src( src )
+					.pipe( handleStreamError( 'scripts' ) )
+					.pipe( changed( gulp.lastRun( scripts ) ) )
+					.pipe(
+						dependents( dependentsConfig, { logDependents: true } )
+					)
+					.pipe( filterEntries )
+					.pipe( logFiles( { task: 'scripts', title: 'entry:' } ) )
+					.pipe( named() )
+					// TODO: webpack errors are displayed twice
+					.pipe( webpackStream( webpackConfig, webpack ) )
+					.pipe( gulp.dest( dest ) )
+			);
 		};
 	},
 	config: {
