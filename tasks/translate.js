@@ -1,5 +1,7 @@
 /**
  * Task: translate
+ *
+ * TODO: changing text-domain creates new .pot file without removing the old one
  */
 
 // Node

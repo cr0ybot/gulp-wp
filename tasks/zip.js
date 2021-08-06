@@ -31,7 +31,6 @@ module.exports = {
 		const { scripts, styles } = registry.config.tasks;
 
 		const zipProject = () => {
-			console.log( 'zipProject' );
 			const zipname = `${ basename( cwd() ) }.zip`;
 			const projectGlobs = src.concat( [
 				getIgnoreGlob( scripts.src ),
