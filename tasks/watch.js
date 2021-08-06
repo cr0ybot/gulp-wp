@@ -14,100 +14,89 @@ const del = require( 'del' );
 const { c, log } = require( '../util' );
 
 module.exports = {
-	task: ( gulp, {}, registry ) => {
-		const {
-			plugin,
-			tasks: { scripts, styles, translate, version },
-		} = registry.config;
+	task: ( gulp, { tasks }, registry ) => {
+		const mirrorDelete = ( task, mirrorDeletion ) => {
+			const taskConfig = registry.config.tasks[ task ];
+
+			return ( filepath ) => {
+				log.debug( c.cyan( task ), 'src deleted:', c.blue( filepath ) );
+				// Get the relative path of the file from it's src root
+				// TODO: This does not work with globs!!!
+				const relPath = relative(
+					resolve( taskConfig.srcBase || taskConfig.src ),
+					resolve(
+						dirname( filepath ),
+						`${ parse( filepath ).name }`
+					)
+				);
+				log.debug( relPath );
+				// Put the relative path in the context of the dest root
+				const destPath = resolve( taskConfig.dest, relPath );
+				// Delete the dest files
+				const delFiles = Array.isArray( mirrorDeletion )
+					? mirrorDeletion.map( ( ext ) => `${ destPath }${ ext }` )
+					: `${ destPath }${ mirrorDeletion }`;
+				log.debug( delFiles );
+				del( delFiles ).then( ( paths ) => {
+					for ( const path of paths ) {
+						log.debug(
+							c.cyan( task ),
+							'removed dest file:',
+							c.blue( path )
+						);
+					}
+				} );
+			};
+		};
 
 		return function watch() {
-			// Watch styles
-			gulp.watch(
-				styles.watch || styles.src,
-				{ cwd: './' },
-				registry.get( 'styles' )
-			)
-				// Mirror src file deletions to dest
-				.on( 'unlink', ( filepath ) => {
-					log.debug(
-						c.cyan( 'styles' ),
-						'src deleted:',
-						c.blue( filepath )
-					);
-					// Get the relative path of the file from it's src root
-					const relPath = relative(
-						resolve( styles.src ),
-						resolve(
-							dirname( filepath ),
-							`${ parse( filepath ).name }.css`
-						)
-					);
-					// Put the relative path in the context of the dest root
-					const destPath = resolve( styles.dest, relPath );
-					// Delete the dest file and any .map file of the same name
-					del( [ destPath, `${ destPath }.map` ] ).then(
-						( paths ) => {
-							for ( const path of paths ) {
-								log.debug(
-									c.cyan( 'styles' ),
-									'removed dest file:',
-									c.blue( path )
-								);
-							}
-						}
-					);
-				} );
+			for ( let task of tasks ) {
+				let mirrorDeletion = false;
+				// Handle object task config
+				if (
+					typeof task === 'object' &&
+					task.hasOwnProperty( 'task' )
+				) {
+					mirrorDeletion = task.mirrorDeletion || mirrorDeletion;
+					task = task.task;
+				}
+				const taskConfig = registry.config.tasks[ task ];
 
-			// Watch scripts
-			gulp.watch(
-				scripts.watch || scripts.src,
-				{ cwd: './' },
-				registry.get( 'scripts' )
-			)
-				// Mirror src file deletions to dest
-				.on( 'unlink', ( filepath ) => {
-					log.debug(
-						c.cyan( 'scripts' ),
-						'src deleted:',
-						c.blue( filepath )
-					);
-					// Get the relative path of the file from it's src root
-					const relPath = relative(
-						resolve( scripts.src ),
-						resolve(
-							dirname( filepath ),
-							`${ parse( filepath ).name }.js`
-						)
-					);
-					// Put the relative path in the context of the dest root
-					const destPath = resolve( scripts.dest, relPath );
-					// Delete the dest file and any .map file of the same name
-					del( [ destPath, `${ destPath }.map` ] ).then(
-						( paths ) => {
-							for ( const path of paths ) {
-								log.debug(
-									c.cyan( 'scripts' ),
-									'removed dest file:',
-									c.blue( destPath )
-								);
-							}
-						}
-					);
-				} );
+				const watcher = gulp.watch(
+					taskConfig.watch || taskConfig.src,
+					{
+						cwd: './',
+						ignored: ( path ) => path.includes( 'node_modules' ),
+					},
+					registry.get( task )
+				);
 
-			// Watch PHP for translate
-			gulp.watch(
-				translate.watch || translate.src,
-				{
-					cwd: './',
-					ignored: ( path ) => path.includes( 'node_modules' ),
-				},
-				registry.get( 'translate' )
-			);
-
-			// Watch version
-			gulp.watch( version.src, { cwd: './' }, registry.get( 'version' ) );
+				if ( mirrorDeletion ) {
+					watcher.on(
+						'unlink',
+						mirrorDelete( task, mirrorDeletion )
+					);
+				}
+			}
 		};
 	},
-	dependencies: [ 'scripts', 'styles', 'translate', 'version' ],
+	config: {
+		tasks: [
+			{
+				task: 'scripts',
+				mirrorDeletion: [ '.js', '.js.map' ],
+			},
+			{
+				task: 'styles',
+				mirrorDeletion: [ '.css', '.css.map' ],
+			},
+			'translate',
+			'version',
+		],
+	},
+	dependencies: ( { tasks } ) => {
+		return tasks.map( ( task ) =>
+			typeof task === 'string' ? task : task.task
+		);
+	},
 };

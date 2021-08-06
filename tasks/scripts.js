@@ -58,6 +58,7 @@ module.exports = {
 	},
 	config: {
 		src: 'src/scripts/**/*.*',
+		srcBase: 'src/scripts', // for watch task to mirror deletions
 		dest: 'dist/js',
 		entries: 'src/scripts/*.*',
 		includePaths: [ 'node_modules' ],
