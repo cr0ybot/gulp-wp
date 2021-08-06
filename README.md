@@ -203,7 +203,31 @@ Runs `build`, then watches your files for changes, incimentally recompiles, and 
 gulp-wp build
 ```
 
-Runs `clean` and then `styles`, `scripts`, and `translate` in parallel.
+Runs a series of parallel tasks in three groups: `preBuild`, `build`, and `postBuild`. The tasks that run by default for each of these groups are part of the default config for the `build` task and can be extended or overridden by your project config.
+
+You can import the default task if your intention is to extend instead of override.
+
+```javascript
+const { config } = require( '@b.d/gulp-wp/tasks/build' );
+
+module.exports = {
+	tasks: {
+		build: {
+			postBuild: [ ...config.postBuild, 'example' ],
+		},
+	},
+};
+```
+
+Default config:
+
+```javascript
+{
+	preBuild: [ 'clean' ],
+	build: [ 'styles', 'scripts', 'translate', 'version' ],
+	postBuild: [],
+}
+```
 
 ### Clean
 

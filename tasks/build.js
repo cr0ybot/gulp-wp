@@ -36,5 +36,8 @@ module.exports = {
 		build: [ 'styles', 'scripts', 'translate', 'version' ],
 		postBuild: [],
 	},
-	dependencies: [ 'clean', 'styles', 'scripts', 'translate', 'version' ],
+	dependencies: ( { preBuild, build, postBuild } ) => {
+		const tasks = new Set( [ ...preBuild, ...build, ...postBuild ] );
+		return Array.from( tasks );
+	},
 };
