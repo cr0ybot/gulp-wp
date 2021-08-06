@@ -4,11 +4,7 @@
 
 module.exports = {
 	task: ( gulp, {}, registry ) => {
-		const dev = gulp.series(
-			registry.get( 'build' ),
-			registry.get( 'serve' ),
-			registry.get( 'watch' )
-		);
+		const dev = gulp.series( 'build', 'serve', 'watch' );
 
 		return dev;
 	},

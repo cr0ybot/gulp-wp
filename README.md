@@ -414,10 +414,10 @@ module.exports = {
 		 * Note that the gulp.series or gulp.parallel must be returned directly.
 		 */
 		const example = gulp.series(
-			registry.get( 'clean' ),
+			'clean',
 			gulp.parallel(
-				registry.get( 'scripts' ),
-				registry.get( 'styles' )
+				'scripts',
+				'styles'
 			)
 		);
 		return example;

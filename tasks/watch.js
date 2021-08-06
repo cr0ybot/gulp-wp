@@ -25,7 +25,7 @@ module.exports = {
 			gulp.watch(
 				styles.watch || `${ styles.src }/**/*.*`,
 				{ cwd: './' },
-				registry.get( 'styles' )
+				'styles'
 			)
 				// Mirror src file deletions to dest
 				.on( 'unlink', ( filepath ) => {
@@ -62,7 +62,7 @@ module.exports = {
 			gulp.watch(
 				scripts.watch || `${ scripts.src }/**/*.*`,
 				{ cwd: './' },
-				registry.get( 'scripts' )
+				'scripts'
 			)
 				// Mirror src file deletions to dest
 				.on( 'unlink', ( filepath ) => {
@@ -102,11 +102,11 @@ module.exports = {
 					cwd: './',
 					ignored: ( path ) => path.includes( 'node_modules' ),
 				},
-				registry.get( 'translate' )
+				'translate'
 			);
 
 			// Watch version
-			gulp.watch( version.src, { cwd: './' }, registry.get( 'version' ) );
+			gulp.watch( version.src, { cwd: './' }, 'version' );
 		};
 	},
 	dependencies: [ 'scripts', 'styles', 'translate', 'version' ],
