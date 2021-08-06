@@ -11,20 +11,29 @@ const del = require( 'del' );
 const { c, log } = require( '../util' );
 
 module.exports = {
-	task: ( gulp, {}, registry ) => {
-		// Depends on scripts and style tasks to be loaded, even if they aren't used directly
-		const {
-			tasks: { scripts, styles },
-		} = registry.config;
+	task: ( gulp, { cleanDest }, registry ) => {
+		const { tasks } = registry.config;
+
+		const delGlobs = cleanDest.map( ( task ) => tasks[ task ].dest );
 
 		return function clean() {
-			return del( [ scripts.dest, styles.dest ] ).then( ( paths ) => {
+			log.debug(
+				'Cleaning',
+				c.cyan( 'dest' ),
+				'of',
+				cleanDest.map( ( task ) => c.cyan( task ) ).join( ', ' )
+			);
+			return del( delGlobs ).then( ( paths ) => {
 				for ( const path of paths ) {
 					log.info( 'cleaned:', c.blue( path ) );
 				}
 			} );
 		};
 	},
-	config: {},
-	dependencies: [ 'scripts', 'styles' ],
+	config: {
+		cleanDest: [ 'scripts', 'styles' ],
+	},
+	dependencies: ( { cleanDest } ) => {
+		return cleanDest || [];
+	},
 };
