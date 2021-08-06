@@ -61,6 +61,7 @@ module.exports = {
 			'!{gulp*,gulp**/*}', // ignore anything that starts with gulp
 		],
 		dest: '../',
+		ignoreSrc: [ 'scripts', 'styles' ],
 	},
-	dependencies: [ 'scripts', 'styles', 'build' ],
+	dependencies: ( { ignoreSrc = [] } ) => [ ...ignoreSrc, 'build' ],
 };
