@@ -3,6 +3,7 @@
  */
 
 // External
+const dedupe = require( 'gulp-dedupe' );
 const dependents = require( 'gulp-dependents' );
 const named = require( 'vinyl-named' );
 const filter = require( 'gulp-filter' );
@@ -45,6 +46,8 @@ module.exports = {
 					.pipe(
 						dependents( dependentsConfig, { logDependents: true } )
 					)
+					// Remove duplicate files
+					.pipe( dedupe() )
 					.pipe( filterEntries )
 					.pipe( logFiles( { task: 'scripts', title: 'entry:' } ) )
 					.pipe( named() )
