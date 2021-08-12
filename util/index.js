@@ -33,7 +33,7 @@ const assetFile = ( ignore = null ) => {
 	function generateAssetFile( file, enc, cb ) {
 		// Ignore glob
 		if ( typeof ignore === 'string' && isMatch( file.path, ignore ) ) {
-			console.log( 'asset: ignoring', file.path );
+			log.debug( 'asset file: ignoring', c.blue( file.path ) );
 			return cb( null, file );
 		}
 
@@ -42,8 +42,6 @@ const assetFile = ( ignore = null ) => {
 		md5.update( file.contents, 'utf8' );
 		const hash = md5.digest( 'hex' ).slice( 0, 32 );
 
-		console.log( 'asset hash', hash );
-
 		// Gather originating file info
 		const base = dirname( file.path );
 		const assetName = `${ parse( basename( file.path ) ).base }.asset.php`;
@@ -51,7 +49,7 @@ const assetFile = ( ignore = null ) => {
 		const contents = Buffer.from(
 			`<?php return array('version' => '${ hash }');`
 		);
-		console.log( 'asset file', path );
+		log.debug( 'asset file:', c.blue( path ) );
 		// Create php file with md5 hash as version
 		const asset = new Vinyl( {
 			base,
