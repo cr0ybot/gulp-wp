@@ -44,7 +44,7 @@ const assetFile = ( ignore = null ) => {
 
 		// Gather originating file info
 		const base = dirname( file.path );
-		const assetName = `${ parse( basename( file.path ) ).base }.asset.php`;
+		const assetName = `${ parse( basename( file.path ) ).name }.asset.php`;
 		const path = join( base, assetName );
 		const contents = Buffer.from(
 			`<?php return array('version' => '${ hash }');`
