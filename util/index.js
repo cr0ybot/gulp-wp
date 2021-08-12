@@ -3,6 +3,7 @@
  */
 
 // Node
+const { createHash } = require( 'crypto' );
 const {
 	accessSync,
 	closeSync,
@@ -10,7 +11,7 @@ const {
 	openSync,
 	readSync,
 } = require( 'fs' );
-const { basename, join, resolve } = require( 'path' );
+const { basename, dirname, join, parse, resolve } = require( 'path' );
 const { cwd } = require( 'process' );
 
 // External
@@ -18,13 +19,51 @@ const c = require( 'ansi-colors' );
 const debug = require( 'gulp-debug' );
 const { sync: glob } = require( 'glob' );
 const log = require( 'gulplog' );
+const { isMatch } = require( 'micromatch' );
 const notify = require( 'gulp-notify' );
 const plumber = require( 'gulp-plumber' );
 const through2 = require( 'through2' );
+const Vinyl = require( 'vinyl' );
 
 c.enabled = require( 'color-support' ).hasBasic;
 
 notify.logLevel( 0 );
+
+const assetFile = ( ignore = null ) => {
+	function generateAssetFile( file, enc, cb ) {
+		// Ignore glob
+		if ( typeof ignore === 'string' && isMatch( file.path, ignore ) ) {
+			console.log( 'asset: ignoring', file.path );
+			return cb( null, file );
+		}
+
+		// Generate md5 hash from file contents
+		const md5 = createHash( 'md5' );
+		md5.update( file.contents, 'utf8' );
+		const hash = md5.digest( 'hex' ).slice( 0, 32 );
+
+		console.log( 'asset hash', hash );
+
+		// Gather originating file info
+		const base = dirname( file.path );
+		const assetName = `${ parse( basename( file.path ) ).base }.asset.php`;
+		const path = join( base, assetName );
+		const contents = Buffer.from(
+			`<?php return array('version' => '${ hash }');`
+		);
+		console.log( 'asset file', path );
+		// Create php file with md5 hash as version
+		const asset = new Vinyl( {
+			base,
+			path,
+			contents,
+		} );
+		this.push( asset );
+
+		return cb( null, file );
+	}
+	return through2.obj( generateAssetFile );
+};
 
 /**
  * Filter out files that haven't changed since timestamp in a stream.
@@ -253,6 +292,7 @@ const logFiles = ( options ) => {
 };
 
 module.exports = {
+	assetFile,
 	c,
 	changed,
 	dependentsConfig,

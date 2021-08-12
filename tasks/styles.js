@@ -13,6 +13,7 @@ const sassGlob = require( 'gulp-sass-glob' );
 
 // Internal
 const {
+	assetFile,
 	changed,
 	dependentsConfig,
 	handleStreamError,
@@ -57,6 +58,7 @@ module.exports = {
 						level: 2,
 					} )
 				)
+				.pipe( assetFile() )
 				.pipe( gulp.dest( dest, { sourcemaps: '.' } ) );
 		};
 	},

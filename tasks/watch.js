@@ -84,11 +84,11 @@ module.exports = {
 		tasks: [
 			{
 				task: 'scripts',
-				mirrorDeletion: [ '.js', '.js.map' ],
+				mirrorDeletion: [ '.js', '.js.map', '.asset.php' ],
 			},
 			{
 				task: 'styles',
-				mirrorDeletion: [ '.css', '.css.map' ],
+				mirrorDeletion: [ '.css', '.css.map', '.asset.php' ],
 			},
 			'translate',
 			'version',
