@@ -42,6 +42,7 @@ module.exports = {
 				.pipe( sassGlob() ) // transform sass glob imports
 				.pipe( dependents( dependentsConfig, { logDependents: true } ) )
 				.pipe( filterEntries )
+				.pipe( sassGlob() ) // again because dependents() pulls in the entry file
 				.pipe( logFiles( { task: 'styles', title: 'entry:' } ) )
 				.pipe( sassFilter )
 				.pipe(
