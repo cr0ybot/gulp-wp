@@ -1,11 +1,17 @@
 {
-	"name": "@b.d/gulp-wp",
+	"name": "gulp-wp",
 	"version": "0.1.0",
 	"description": "A reusable, extendable, updatable Gulp workflow for WordPress themes & plugins",
 	"author": {
 		"name": "Blackbird Digital",
 		"url": "https://blackbird.digital"
 	},
+	"contributors": [
+		{
+			"name": "Cory Hughart",
+			"url": "https://coryhughart.com"
+		}
+	],
 	"license": "MIT",
 	"bugs": {
 		"url": "https://github.com/BlackbirdDigital/gulp-wp/issues"

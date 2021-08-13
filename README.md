@@ -37,7 +37,7 @@ npm install /path/to/cloned/gulp-wp
 The intended installation after publishing on npm will look like:
 
 ```shell
-npm install @b.d/gulp-wp
+npm install gulp-wp
 ```
 
 ### Usage
@@ -208,7 +208,7 @@ Runs a series of parallel tasks in three groups: `preBuild`, `build`, and `postB
 You can import the default task if your intention is to extend instead of override.
 
 ```javascript
-const { config } = require( '@b.d/gulp-wp/tasks/build' );
+const { config } = require( 'gulp-wp/tasks/build' );
 
 module.exports = {
 	tasks: {
@@ -494,7 +494,7 @@ module.exports = {
 When overriding a Gulp WP task, you can import the default task directly to access it's properties if needed:
 
 ```javascript
-const { config, dependencies } = require( '@b.d/gulp-wp/tasks/example' );
+const { config, dependencies } = require( 'gulp-wp/tasks/example' );
 module.exports = {
 	task: // your override task wrapper here
 	config: {
@@ -515,7 +515,7 @@ Instead of running `gulp-wp`, you can instead add your own `gulpfile.js` in the 
 const gulp = require('gulp');
 
 // Require GulpWP and pass your local `gulp` instance to it
-const gulpWP = require('@b.d/gulp-wp')(gulp);
+const gulpWP = require('gulp-wp')(gulp);
 
 // Run this custom task via `gulp custom`
 exports.custom = (done) => {
@@ -546,7 +546,7 @@ const config = {
 };
 
 // Require GulpWP and pass your custom config
-const gulpWP = require('@b.d/gulp-wp')(gulp, config);
+const gulpWP = require('gulp-wp')(gulp, config);
 ```
 
 ## Rationale
@@ -559,7 +559,7 @@ Single-dependency, zero-configuration scripts packages like `@wordpress/scripts`
 
 But Gulp _is a task runner_. It was born to _run workflows_. Why should we abandon it?
 
-Enter `@b.d/gulp-wp`, a reusable scripts package built with Gulp. All of the convenience of a single-dependency, zero-config workflow script package without the hassle of bending Webpack to the breaking point just to compile some Sass. Install it and get up-and-running immediately, or extend it using Gulp the way you're used to.
+Enter `gulp-wp`, a reusable scripts package built with Gulp. All of the convenience of a single-dependency, zero-config workflow script package without the hassle of bending Webpack to the breaking point just to compile some Sass. Install it and get up-and-running immediately, or extend it using Gulp the way you're used to.
 
 ## About Blackbird
 
