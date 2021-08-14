@@ -10,6 +10,7 @@ const filter = require( 'gulp-filter' );
 const postcss = require( 'gulp-postcss' );
 const sass = require( 'gulp-sass' )( require( 'sass' ) );
 const sassGlob = require( 'gulp-sass-glob' );
+const jsonImporter = require( 'node-sass-json-importer' );
 
 // Internal
 const {
@@ -50,6 +51,7 @@ module.exports = {
 						includePaths,
 						indentType: 'tab',
 						outputStype: 'expanded',
+						importer: jsonImporter(),
 					} )
 				)
 				.pipe( sassFilter.restore )
