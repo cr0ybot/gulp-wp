@@ -280,6 +280,7 @@ Transforms your _style_ source files (`.css`, `.scss`, `.sass`) into CSS for the
 Features:
   * [gulp-sass](https://www.npmjs.com/package/gulp-sass): Implements [Dart Sass](http://sass-lang.com/dart-sass) and sets the `node_modules` folder as an `includePath` (so you can do `@import 'foo/bar'` instead of `@import '../../node_modules/foo/bar'`).
   * [gulp-sass-glob](https://www.npmjs.com/package/gulp-sass-glob): Import sass files using glob patterns, great for importing styles for components that don't depend on each other.
+  * [node-sass-json-importer](https://www.npmjs.com/package/node-sass-json-importer): Import .json & .js files into Sass. JS files must export via the `module.exports` object.
   * [gulp-postcss](https://www.npmjs.com/package/gulp-postcss): Currently the only PostCSS plugin in use by default is [Autoprefixer](https://www.npmjs.com/package/autoprefixer).
   * [gulp-clean-css](https://www.npmjs.com/package/gulp-clean-css): Minifies CSS inteligently. Set to level 2 optimizations by default.
   * [gulp-dependents](https://www.npmjs.com/package/gulp-dependents): Only recompile the entry files that import/use the partial you just edited.
