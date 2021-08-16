@@ -51,7 +51,9 @@ module.exports = {
 						includePaths,
 						indentType: 'tab',
 						outputStype: 'expanded',
-						importer: jsonImporter(),
+						importer: jsonImporter( {
+							convertCase: true,
+						} ),
 					} )
 				)
 				.pipe( sassFilter.restore )
