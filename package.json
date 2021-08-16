@@ -56,7 +56,7 @@
 		"gulp": "^4.0.2",
 		"gulp-clean-css": "^4.3.0",
 		"gulp-debug": "^4.0.0",
-		"gulp-dedupe": "^0.0.2",
+		"gulp-dedupe": "github:hoho/gulp-dedupe#468dabc327b8f450cdafe5f2cab457a1293b9057",
 		"gulp-dependents": "^1.2.5",
 		"gulp-filter": "^7.0.0",
 		"gulp-notify": "^4.0.0",
