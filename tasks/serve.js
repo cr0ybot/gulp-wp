@@ -22,8 +22,10 @@ module.exports = {
 			tasks: { scripts, styles },
 		} = registry.config;
 
+		const { hostname } = new URL( DEV_URL );
+
 		const bsConfig = {
-			host: new URL( DEV_URL ).hostname,
+			host: hostname,
 			proxy: DEV_URL,
 			files: [
 				'**/*.php',
@@ -36,7 +38,9 @@ module.exports = {
 				`${ styles.dest }/**/*.php`,
 			],
 			// Conditionally add bs env config
-			...( BROWSERSYNC_OPEN && { open: BROWSERSYNC_OPEN === 'true' } ),
+			open:
+				BROWSERSYNC_OPEN ||
+				( hostname === 'localhost' ? true : 'external' ),
 			...( BROWSERSYNC_BROWSER && {
 				browser: JSON.parse( BROWSERSYNC_BROWSER ),
 			} ),
