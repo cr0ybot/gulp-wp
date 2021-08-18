@@ -148,9 +148,11 @@ file: .env
 DEV_URL="https://mydevsite.local/"
 NOTIFY=true
 BROWSERSYNC_OPEN=false
-BROWSERSYNC_BROWSER="['firefox', 'google chrome']"
+BROWSERSYNC_BROWSER='["firefox", "google chrome"]'
 BROWSERSYNC_NOTIFY=true
 ```
+
+**The `BROWSERSYNC_BROWSER` option takes a JSON-parsable string, so it must be surrounded by single-quotes with double-quotes used within. It can be an array like the example above or a single browser name string (`='firefox'`) or path (`='/Applications/FirefoxDeveloperEdition.app'`)).**
 
 > Note that you can also set other environment variables for tools used by this workflow. For instance, you can set `DISABLE_NOTIFIER=true` to turn off `gulp-notify` directly instead of using the `NOTIFY` option.
 
