@@ -24,6 +24,15 @@ module.exports = {
 
 		const { hostname } = new URL( DEV_URL );
 
+		const open = ( () => {
+			if ( typeof BROWSERSYNC_OPEN === undefined ) {
+				return hostname === 'localhost' ? true : 'external';
+			} else if ( BROWSERSYNC_OPEN === 'false' ) {
+				return false;
+			}
+			return BROWSERSYNC_OPEN;
+		} )();
+
 		const bsConfig = {
 			host: hostname,
 			proxy: DEV_URL,
@@ -37,10 +46,8 @@ module.exports = {
 				`${ scripts.dest }/**/*.php`,
 				`${ styles.dest }/**/*.php`,
 			],
+			open,
 			// Conditionally add bs env config
-			open:
-				BROWSERSYNC_OPEN ||
-				( hostname === 'localhost' ? true : 'external' ),
 			...( BROWSERSYNC_BROWSER && {
 				browser: JSON.parse( BROWSERSYNC_BROWSER ),
 			} ),
