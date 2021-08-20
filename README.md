@@ -76,14 +76,14 @@ There are several tasks available for individual aspects of development. General
 
 Running a task in your project is as simple as calling `npx gulp-wp foo` where "foo" is the task name:
 
-Task | Description
------|------------
-[dev](#dev-default) | Default task that runs when no task is specified (i.e. `npx gulp-wp`). Runs everything that `build` does, but also watches your files for changes and sends real-time updates via BrowserSync to your browser.
-[build](#build) | Runs all of the various tasks to build your project for deployment.
-[scripts](#scripts) | Runs `@wordpress/scripts` to package your JavaScript and generate asset files with a version hash and dependency array.
-[styles](#styles) | Compiles your Sass or Post CSS.
-[translate](#translate) | Runs `wp-pot` to create translation files.
-[version](#version) | Copies version number updates from `package.json` to your theme's `style.css` file or your plugin's main php file.
+| Task                    | Description                                                                                                                                                                                                    |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [dev](#dev-default)     | Default task that runs when no task is specified (i.e. `npx gulp-wp`). Runs everything that `build` does, but also watches your files for changes and sends real-time updates via BrowserSync to your browser. |
+| [build](#build)         | Runs all of the various tasks to build your project for deployment.                                                                                                                                            |
+| [scripts](#scripts)     | Runs `@wordpress/scripts` to package your JavaScript and generate asset files with a version hash and dependency array.                                                                                        |
+| [styles](#styles)       | Compiles your Sass or Post CSS.                                                                                                                                                                                |
+| [translate](#translate) | Runs `wp-pot` to create translation files.                                                                                                                                                                     |
+| [version](#version)     | Copies version number updates from `package.json` to your theme's `style.css` file or your plugin's main php file.                                                                                             |
 
 > See the [Tasks](#tasks) section below for additional tasks and more details.
 
@@ -132,13 +132,13 @@ While this package can be used with "zero configuration", your project may requi
 
 There are certain configurations that may be unique to each developer or environment, such as the local development URL or what browser BrowserSync should open, if any, so this package supports [Dotenv](https://www.npmjs.com/package/dotenv) for the options listed below. Just add a file to the root of your project named ".env", add any of the below options, and don't forget to add the file to your `gitignore`.
 
-Option | Default | Type | Description
--------|---------|------|------------
-DEV_URL | "http://localhost" | string | Local development URL for Browsersync. HTTPS and paths are accepted: "https://devdomain.local/foo".
-NOTIFY | `true` | boolean&#124;string | Either a boolean to turn notifications on/off, or a string specifying what sound should be used (Mac only). See https://github.com/mikaelbr/node-notifier for sound name options.
-BROWSERSYNC_OPEN | `true` | boolean | See https://browsersync.io/docs/options#option-open
-BROWSERSYNC_BROWSER | N/A | string | Must be either a single string value or an array in JSON format as a string. See https://browsersync.io/docs/options#option-browser
-BROWSERSYNC_NOTIFY | `true` | boolean | See https://browsersync.io/docs/options#option-notify
+| Option              | Default            | Type                | Description                                                                                                                                                                       |
+| ------------------- | ------------------ | ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| DEV_URL             | "http://localhost" | string              | Local development URL for Browsersync. HTTPS and paths are accepted: "https://devdomain.local/foo".                                                                               |
+| NOTIFY              | `true`             | boolean&#124;string | Either a boolean to turn notifications on/off, or a string specifying what sound should be used (Mac only). See https://github.com/mikaelbr/node-notifier for sound name options. |
+| BROWSERSYNC_OPEN    | `true`             | boolean             | See https://browsersync.io/docs/options#option-open                                                                                                                               |
+| BROWSERSYNC_BROWSER | N/A                | string              | Must be either a single string value or an array in JSON format as a string. See https://browsersync.io/docs/options#option-browser                                               |
+| BROWSERSYNC_NOTIFY  | `true`             | boolean             | See https://browsersync.io/docs/options#option-notify                                                                                                                             |
 
 #### Example Dotenv file
 
@@ -287,7 +287,9 @@ Features:
   * [gulp-clean-css](https://www.npmjs.com/package/gulp-clean-css): Minifies CSS inteligently. Set to level 2 optimizations by default.
   * [gulp-dependents](https://www.npmjs.com/package/gulp-dependents): Only recompile the entry files that import/use the partial you just edited.
 
-> Using Sass is optional--If you prefer to use PostCSS plugins, refer to this documentation for how to load them via postcss config: https://www.npmjs.com/package/postcss-load-config
+Using Sass is optional--If you prefer to use PostCSS plugins, refer to this documentation for how to load them via postcss config: https://www.npmjs.com/package/postcss-load-config
+
+> Note that if you use your own local PostCSS config file, the default Gulp WP plugins (autoprefixer) will not be applied. Make sure your local config includes the autoprefixer plugin if you need it.
 
 Default config:
 
