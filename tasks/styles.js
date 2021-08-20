@@ -9,7 +9,6 @@ const dependents = require( 'gulp-dependents' );
 const filter = require( 'gulp-filter' );
 const glob = require( 'glob' );
 const postcss = require( 'gulp-postcss' );
-const postcssrc = require( 'postcss-load-config' );
 const sass = require( 'gulp-sass' )( require( 'sass' ) );
 const sassGlob = require( 'gulp-sass-glob' );
 const jsonImporter = require( 'node-sass-json-importer' );
@@ -17,17 +16,19 @@ const jsonImporter = require( 'node-sass-json-importer' );
 // Internal
 const {
 	assetFile,
+	c,
 	changed,
 	dependentsConfig,
 	getPackageJSON,
 	handleStreamError,
 	logFiles,
+	log,
 } = require( '../util' );
 
 const postcssConfigFiles = [
 	'.postcssrc',
 	'.postcssrc.json',
-	'.postcssrs.yml',
+	'.postcssrc.yml',
 	'.postcssrc.js',
 	'postcss.config.js',
 ];
@@ -42,11 +43,23 @@ module.exports = {
 			const { postcss: postcssPackageConfig } = getPackageJSON();
 			// Check for postcss config file
 			const postcssFileConfig = glob.sync(
-				`(${ postcssConfigFiles.join( '|' ) })`
+				`@(${ postcssConfigFiles.join( '|' ) })`,
+				{ dot: true }
 			);
 			const hasPostcssConfig =
 				typeof postcssPackageConfig !== 'undefined' ||
 				postcssFileConfig.length > 0;
+
+			if ( hasPostcssConfig ) {
+				log.debug(
+					'PostCSS config found:',
+					( typeof postcssPackageConfig !== 'undefined' &&
+						c.blue( 'package.json' ) ) ||
+						c.blue( postcssFileConfig.join( ', ' ) )
+				);
+			} else {
+				log.debug( 'No local PostCSS config found.' );
+			}
 
 			return (
 				gulp
