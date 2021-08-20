@@ -9,6 +9,7 @@ const {
 	closeSync,
 	constants: fsConstants,
 	openSync,
+	readFileSync,
 	readSync,
 } = require( 'fs' );
 const { basename, dirname, join, parse, resolve } = require( 'path' );
@@ -118,6 +119,16 @@ const dependentsConfig = {
 for ( const ext of jsPostfixes ) {
 	dependentsConfig[ ext ] = jsDependentsConfig;
 }
+
+/**
+ * Get the contents of package.json
+ *
+ * @returns {object} Contents of package.json
+ */
+const getPackageJSON = () => {
+	// NOTE: can't just `require` package.json because successive calls will use a cached version
+	return JSON.parse( readFileSync( resolve( cwd(), 'package.json' ) ) );
+};
 
 /**
  * Attempts to locate the main plugin file similar to how WordPress does, with a little extra help from `glob`.
@@ -294,6 +305,7 @@ module.exports = {
 	c,
 	changed,
 	dependentsConfig,
+	getPackageJSON,
 	getPluginFile,
 	handleStreamError,
 	isTheme,

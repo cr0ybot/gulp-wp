@@ -4,16 +4,14 @@
 
 // Node
 const { basename, dirname, extname, resolve } = require( 'path' );
-const { cwd } = require( 'process' );
 const { promisify } = require( 'util' );
-const { readFileSync } = require( 'fs' );
 
 // External
 const fileData = promisify( require( 'wp-get-file-data' ) );
 const replace = require( 'gulp-replace' );
 
 // Internal
-const { c, handleStreamError, log } = require( '../util' );
+const { c, getPackageJSON, handleStreamError, log } = require( '../util' );
 
 module.exports = {
 	task: ( gulp, { src }, registry ) => {
@@ -28,9 +26,7 @@ module.exports = {
 			// Get version from package.json
 			if ( filename === 'package.json' ) {
 				// NOTE: can't just `require` package.json because successive calls will use a cached version
-				const { version } = JSON.parse(
-					readFileSync( resolve( cwd(), 'package.json' ) )
-				);
+				const { version } = getPackageJSON();
 				return Promise.resolve( version );
 			}
 
