@@ -20,21 +20,7 @@ It is also :cool: , :new: , & :free: !
 
 ### Installation
 
-During this package's development, it can be installed directly from the `develop` branch on GitHub:
-
-```shell
-npm install https://github.com/BlackbirdDigital/gulp-wp.git#develop
-```
-
-It can also be installed by cloning the repo locally and linking to it in your project. This is handy if you intend to work on this package:
-
-```shell
-git clone --branch develop https://github.com/BlackbirdDigital/gulp-wp.git
-cd /path/to/project
-npm install /path/to/cloned/gulp-wp
-```
-
-The intended installation after publishing on npm will look like:
+Install directly from NPM into your project:
 
 ```shell
 npm install gulp-wp
