@@ -97,7 +97,7 @@ const jsPostfixes = [ '.js', '.jsx', '.ts', '.tsx', '.mjs', '.cjs' ];
 const jsDependentsConfig = {
 	postfixes: jsPostfixes,
 	parserSteps: [
-		/import(?:["'\s]*(?:[\w*${}\n\r\t, ]+)from\s*)?["'\s]*(.*[@\w_-]+)["'\s].*;?$/gm,
+		/(?:import|export)(?:["'\s]*(?:[\w*${}\n\r\t, ]+)from\s*)?["'\s]*(.*[@\w_-]+)["'\s].*;?$/gm,
 		function ( path ) {
 			// Remove file extension, if any
 			// TODO: insert postfixes dynamically?
