@@ -33,8 +33,8 @@ module.exports = {
 	},
 	config: {
 		preBuild: [ 'clean' ],
-		build: [ 'styles', 'scripts', 'translate', 'version' ],
-		postBuild: [],
+		build: [ 'styles', 'scripts' ],
+		postBuild: [ 'translate', 'version' ],
 	},
 	dependencies: ( { preBuild, build, postBuild } ) => {
 		const tasks = new Set( [ ...preBuild, ...build, ...postBuild ] );
