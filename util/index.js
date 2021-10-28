@@ -24,16 +24,25 @@ const { isMatch } = require( 'micromatch' );
 const notify = require( 'gulp-notify' );
 const plumber = require( 'gulp-plumber' );
 const through2 = require( 'through2' );
+const toAbsGlob = require( 'to-absolute-glob' );
 const Vinyl = require( 'vinyl' );
 
 c.enabled = require( 'color-support' ).hasBasic;
 
 notify.logLevel( 0 );
 
-const assetFile = ( ignore = null ) => {
+const assetFile = ( ignoreGlob = false ) => {
 	function generateAssetFile( file, enc, cb ) {
 		// Ignore glob
-		if ( typeof ignore === 'string' && isMatch( file.path, ignore ) ) {
+		ignoreGlob =
+			typeof ignoreGlob === 'string' ? [ ignoreGlob ] : ignoreGlob;
+		if (
+			Array.isArray( ignoreGlob ) &&
+			isMatch(
+				file.path,
+				ignoreGlob.map( ( g ) => toAbsGlob( g, { cwd: file.cwd } ) )
+			)
+		) {
 			log.debug( 'asset file: ignoring', c.blue( file.path ) );
 			return cb( null, file );
 		}
@@ -48,7 +57,7 @@ const assetFile = ( ignore = null ) => {
 		const assetName = `${ parse( basename( file.path ) ).name }.asset.php`;
 		const path = join( base, assetName );
 		const contents = Buffer.from(
-			`<?php return array('version' => '${ hash }');`
+			`<?php return array('version' => '${ hash }', 'dependencies' => array());`
 		);
 		log.debug( 'asset file:', c.blue( path ) );
 		// Create php file with md5 hash as version
@@ -72,9 +81,24 @@ const assetFile = ( ignore = null ) => {
  *
  * @function
  * @param {number} timestamp Timestamp to check against file modification/creation times
+ * @param {string|string[]} includeGlob Glob to include regardless of file timestamp
  */
-const changed = ( timestamp ) => {
+const changed = ( timestamp, includeGlob = false ) => {
 	function filterChanged( file, enc, cb ) {
+		// Check for file match to include regardless of timestamp
+		includeGlob =
+			typeof includeGlob === 'string' ? [ includeGlob ] : includeGlob;
+		if (
+			Array.isArray( includeGlob ) &&
+			isMatch(
+				file.path,
+				includeGlob.map( ( g ) => toAbsGlob( g, { cwd: file.cwd } ) )
+			)
+		) {
+			log.debug( 'including unchanged file:', c.blue( file.path ) );
+			return cb( null, file );
+		}
+
 		// Skip file if mtime or ctime is less than timestamp
 		if (
 			file.stat &&
