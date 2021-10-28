@@ -5,20 +5,18 @@
 // External
 const autoprefixer = require( 'autoprefixer' );
 const cleanCSS = require( 'gulp-clean-css' );
-const dependents = require( 'gulp-dependents' );
 const filter = require( 'gulp-filter' );
 const glob = require( 'glob' );
 const postcss = require( 'gulp-postcss' );
 const sass = require( 'gulp-sass' )( require( 'sass' ) );
-const sassGlob = require( 'gulp-sass-glob' );
+const sassGlob = require( 'gulp-sass-glob-use-forward' );
+const sassGlobLegacy = require( 'gulp-sass-glob' );
 const jsonImporter = require( 'node-sass-json-importer' );
 
 // Internal
 const {
 	assetFile,
 	c,
-	changed,
-	dependentsConfig,
 	getPackageJSON,
 	handleStreamError,
 	logFiles,
@@ -38,6 +36,7 @@ module.exports = {
 		return function styles() {
 			const sassFilter = filter( '*.s[a|c]ss', { restore: true } );
 			const filterEntries = filter( entries );
+			const filterStyles = filter( '*.[c|sa|sc]ss' );
 
 			// Check for postcss config in package.json
 			const { postcss: postcssPackageConfig } = getPackageJSON();
@@ -67,21 +66,11 @@ module.exports = {
 						sourcemaps: true,
 					} )
 					.pipe( handleStreamError( 'styles' ) )
-					.pipe( changed( gulp.lastRun( styles ) ) )
-					.pipe(
-						logFiles( {
-							logLevel: 'debug',
-							task: 'styles',
-							title: 'file:',
-						} )
-					)
-					.pipe( sassGlob() ) // transform sass glob imports
-					.pipe(
-						dependents( dependentsConfig, { logDependents: true } )
-					)
-					.pipe( filterEntries )
-					.pipe( sassGlob() ) // again because dependents() pulls in the entry file
-					.pipe( logFiles( { task: 'styles', title: 'entry:' } ) )
+					// Transform sass glob @import
+					.pipe( sassGlobLegacy() )
+					// Transform sass glob @use/@forward
+					.pipe( sassGlob() )
+					// Filter out non-sass files for the sass compilation step.
 					.pipe( sassFilter )
 					.pipe(
 						sass.sync( {
@@ -93,18 +82,26 @@ module.exports = {
 							} ),
 						} )
 					)
+					// Restore any non-sass files that were previously filtered out.
 					.pipe( sassFilter.restore )
+					// Filter out anything without a style extension
+					.pipe( filterStyles )
 					// If there is a postcss config, gulp-postcss will use it. Otherwise, use our plugins.
 					.pipe(
 						hasPostcssConfig
 							? postcss()
 							: postcss( [ autoprefixer() ] )
 					)
+					// Filter out all but entrypoints.
+					.pipe( filterEntries )
+					.pipe( logFiles( { task: 'styles', title: 'entry:' } ) )
+					// Optimize CSS with cleanCSS level 2.
 					.pipe(
 						cleanCSS( {
 							level: 2,
 						} )
 					)
+					// Generate *.asset.php file similar to what is provided by wp-scripts.
 					.pipe( assetFile() )
 					.pipe( gulp.dest( dest, { sourcemaps: '.' } ) )
 			);
