@@ -42,16 +42,20 @@ module.exports = {
 				gulp
 					.src( src )
 					.pipe( handleStreamError( 'scripts' ) )
+					// Filter out files that have not changed since last run.
 					.pipe( changed( gulp.lastRun( scripts ) ) )
+					// Find dependents for the changed files.
 					.pipe(
 						dependents( dependentsConfig, { logDependents: true } )
 					)
-					// Remove duplicate files
+					// Remove duplicate files.
 					.pipe( dedupe() )
+					// Filter out all but entrypoints.
 					.pipe( filterEntries )
 					.pipe( logFiles( { task: 'scripts', title: 'entry:' } ) )
+					// Convert into named entrypoints for WebPack.
 					.pipe( named() )
-					// TODO: webpack errors are displayed twice
+					// TODO: webpack errors are displayed twice.
 					.pipe( webpackStream( webpackConfig, webpack ) )
 					.pipe( gulp.dest( dest ) )
 			);
