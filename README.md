@@ -212,8 +212,8 @@ Default config:
 ```javascript
 {
 	preBuild: [ 'clean' ],
-	build: [ 'styles', 'scripts', 'translate', 'version' ],
-	postBuild: [],
+	build: [ 'styles', 'scripts' ],
+	postBuild: [ 'translate', 'version' ],
 }
 ```
 
