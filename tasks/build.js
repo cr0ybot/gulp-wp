@@ -33,7 +33,7 @@ module.exports = {
 	},
 	config: {
 		preBuild: [ 'clean' ],
-		build: [ 'styles', 'scripts' ],
+		build: [ 'styles', 'scripts', 'blocks' ],
 		postBuild: [ 'translate', 'version' ],
 	},
 	dependencies: ( { preBuild, build, postBuild } ) => {
