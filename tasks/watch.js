@@ -90,6 +90,18 @@ module.exports = {
 				task: 'styles',
 				mirrorDeletion: [ '.css', '.css.map', '.asset.php' ],
 			},
+			{
+				task: 'blocks',
+				mirrorDeletion: [
+					'.css',
+					'.css.map',
+					'.js',
+					'.js.map',
+					'.json',
+					'.php',
+					'.asset.php',
+				],
+			},
 			'translate',
 			'version',
 		],
