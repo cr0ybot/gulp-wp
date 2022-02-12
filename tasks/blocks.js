@@ -18,7 +18,7 @@ const webpackStream = require( 'webpack-stream' );
 const wpWebpackConfig = require( '@wordpress/scripts/config/webpack.config' );
 
 // GulpWP
-const { handleStreamError, logFiles } = require( '../util' );
+const { c, handleStreamError, log, logFiles } = require( '../util' );
 
 const blockAssets = [ 'script', 'style', 'editorScript', 'editorStyle', 'viewScript' ];
 
@@ -113,7 +113,7 @@ module.exports = {
 			 * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-metadata/#assets
 			 */
 			const streamBlockAssets = through2.obj(function filterBlockAssetEntries( file, enc, cb ) {
-				console.log(file.path);
+				log.debug(file.path);
 				// Parse block.json for asset files.
 				const data = JSON.parse( file.contents.toString() );
 				if ( data ) {
@@ -128,22 +128,21 @@ module.exports = {
 							for ( const asset of data[key] ) {
 								if ( asset.startsWith('file:') ) {
 									const assetFile = asset.substring(5);
-									console.log('found ', assetFile);
-									let glob = dirname(file.path);
+									log.debug('block asset:', c.blue(assetFile));
+									let assetPath = dirname(file.path);
 									// If asset is js, glob for js, ts, jsx, or tsx.
 									if (assetFile.endsWith('js')) {
-										glob += '/' + assetFile.slice(0, -2) + '{j,t}{s,sx}';
+										assetPath += `/${assetFile.slice(0, -2)}{j,t}{s,sx}`;
 									}
 									// If asset is css, glob for sass, scss, or css.
 									else if (assetFile.endsWith('css')) {
-										glob += '/' + assetFile.slice(0, -3) + '{sa,sc,c}ss';
+										assetPath += `/${assetFile.slice(0, -3)}{sa,sc,c}ss`;
 									}
 									// If neither, just pass the file through, consequences be damned.
 									else {
-										glob += '/' + assetFile;
+										assetPath += `/${assetFile}`;
 									}
-									console.log(glob);
-									vinylRead.sync(glob).map(f => this.push(f));
+									vinylRead.sync(assetPath).map(f => this.push(f));
 								}
 							}
 						}
