@@ -110,6 +110,7 @@ module.exports = {
 	config: {
 		src: 'src/styles/**/*.*',
 		srcBase: 'src/styles', // for watch task to mirror deletions
+		watch: [ 'src/styles/**/*.*', 'theme.json' ],
 		dest: 'dist/css',
 		entries: 'src/styles/*.*',
 		includePaths: [ 'node_modules' ],
