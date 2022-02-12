@@ -19,7 +19,7 @@ module.exports = {
 				BROWSERSYNC_BROWSER,
 				BROWSERSYNC_NOTIFY,
 			},
-			tasks: { scripts, styles },
+			tasks: { scripts, styles, blocks },
 		} = registry.config;
 
 		const { hostname } = new URL( DEV_URL );
@@ -38,8 +38,11 @@ module.exports = {
 			proxy: DEV_URL,
 			files: [
 				'**/*.php',
+				'**/*.json',
 				`${ scripts.dest }/**/*.js`,
 				`${ styles.dest }/**/*.css`,
+				`${ blocks.dest }/**/*.js`,
+				`${ blocks.dest }/**/*.css`,
 			],
 			ignore: [
 				'node_modules/**/*',
@@ -61,5 +64,5 @@ module.exports = {
 			bs.init( bsConfig, done );
 		};
 	},
-	dependencies: [ 'scripts', 'styles' ],
+	dependencies: [ 'scripts', 'styles', 'blocks' ],
 };
