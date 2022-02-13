@@ -1,6 +1,6 @@
 {
 	"name": "gulp-wp",
-	"version": "0.5.0",
+	"version": "0.6.0",
 	"description": "A reusable, extendable, updatable Gulp workflow for WordPress themes & plugins",
 	"author": {
 		"name": "Blackbird Digital",
