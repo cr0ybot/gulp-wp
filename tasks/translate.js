@@ -1,7 +1,5 @@
 /**
  * Task: translate
- *
- * TODO: changing text-domain creates new .pot file without removing the old one
  */
 
 // Node
@@ -113,7 +111,13 @@ module.exports = {
 		};
 	},
 	config: {
-		src: [ '**/*.php', '!node_modules/**/*', '!**/*.asset.php' ],
+		src: [
+			'**/*.php',
+			'dist/**/*.{js,php}',
+			'!node_modules/**/*',
+			'!**/*.asset.php',
+			'!src/**/*',
+		],
 		dest: 'languages',
 	},
 };

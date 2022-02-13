@@ -31,7 +31,7 @@ module.exports = {
 		};
 	},
 	config: {
-		cleanDest: [ 'scripts', 'styles' ],
+		cleanDest: [ 'scripts', 'styles', 'blocks' ],
 	},
 	dependencies: ( { cleanDest } ) => {
 		return cleanDest || [];
