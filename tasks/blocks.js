@@ -18,7 +18,7 @@ const webpackStream = require( 'webpack-stream' );
 const wpWebpackConfig = require( '@wordpress/scripts/config/webpack.config' );
 
 // GulpWP
-const { c, handleStreamError, log, logFiles } = require( '../util' );
+const { c, changed, handleStreamError, log, logFiles } = require( '../util' );
 
 const blockAssets = [ 'script', 'style', 'editorScript', 'editorStyle', 'viewScript' ];
 
@@ -180,6 +180,7 @@ module.exports = {
 				gulp.src( src )
 					.pipe( handleStreamError( 'blocks' ) )
 					.pipe( filterOthers )
+					.pipe( changed( gulp.lastRun( blocks ) ) )
 					.pipe( logFiles( { task: 'blocks', title: 'copy:' } ) )
 					.pipe( gulp.dest( dest ) )
 			);
