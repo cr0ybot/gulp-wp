@@ -14,6 +14,7 @@ const {
 } = require( 'fs' );
 const { basename, dirname, join, parse, resolve } = require( 'path' );
 const { cwd } = require( 'process' );
+const { promisify } = require( 'util' );
 
 // External
 const c = require( 'ansi-colors' );
@@ -26,6 +27,7 @@ const plumber = require( 'gulp-plumber' );
 const through2 = require( 'through2' );
 const toAbsGlob = require( 'to-absolute-glob' );
 const Vinyl = require( 'vinyl' );
+const wpGetFileData = require( '@martin-pettersson/wp-get-file-data' );
 
 c.enabled = require( 'color-support' ).hasBasic;
 
@@ -143,6 +145,13 @@ const dependentsConfig = {
 for ( const ext of jsPostfixes ) {
 	dependentsConfig[ ext ] = jsDependentsConfig;
 }
+
+/**
+ * Get WP file header data.
+ *
+ * @returns {object} File header data
+ */
+const getFileData = promisify( wpGetFileData.getFileData );
 
 /**
  * Get the contents of package.json
@@ -329,6 +338,7 @@ module.exports = {
 	c,
 	changed,
 	dependentsConfig,
+	getFileData,
 	getPackageJSON,
 	getPluginFile,
 	handleStreamError,

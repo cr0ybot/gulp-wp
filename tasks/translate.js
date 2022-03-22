@@ -4,28 +4,24 @@
 
 // Node
 const { join } = require( 'path' );
-const { promisify } = require( 'util' );
 
 // External
-const fileData = promisify( require( 'wp-get-file-data' ) );
 const sort = require( 'gulp-sort' );
 const wpPot = require( 'gulp-wp-pot' );
 
 // Internal
-const { c, handleStreamError, log, logFiles } = require( '../util' );
+const { c, getFileData, handleStreamError, log, logFiles } = require( '../util' );
 
 module.exports = {
 	task: ( gulp, { src, dest }, registry ) => {
 		return function translate() {
 			const { plugin } = registry.config;
 			const metadataFile = plugin !== undefined ? plugin : 'style.css';
-			const projectType = plugin !== undefined ? 'Plugin' : 'Theme';
+			const packageName = plugin !== undefined ? 'Plugin Name' : 'Theme Name';
 
-			return fileData( metadataFile, {
-				package: `${ projectType } Name`,
-				domain: 'Text Domain',
-			} )
+			return getFileData( metadataFile )
 				.catch( ( err ) => {
+					console.log(err);
 					log.warn(
 						c.yellow(
 							'No metadata file found. Make sure you have a'
@@ -41,7 +37,8 @@ module.exports = {
 					);
 					return {};
 				} )
-				.then( ( { domain, package } ) => {
+				.then( ( data ) => {
+					const { ['Text Domain']: domain, [packageName]: package } = data;
 					// Add metadataFile to src array
 					if ( metadataFile ) {
 						if ( Array.isArray( src ) ) {
@@ -53,12 +50,12 @@ module.exports = {
 
 					if ( ! package ) {
 						log.warn(
-							c.cyan( `${ projectType } Name` ),
+							c.cyan( packageName ),
 							c.yellow( 'not found.' )
 						);
 					} else {
 						log.info(
-							`${ c.cyan( `${ projectType } Name` ) }:`,
+							`${ c.cyan( packageName ) }:`,
 							c.magenta( package )
 						);
 					}
