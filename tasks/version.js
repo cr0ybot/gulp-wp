@@ -3,15 +3,13 @@
  */
 
 // Node
-const { basename, dirname, extname, resolve } = require( 'path' );
-const { promisify } = require( 'util' );
+const { basename, dirname, extname } = require( 'path' );
 
 // External
-const fileData = promisify( require( 'wp-get-file-data' ) );
 const replace = require( 'gulp-replace' );
 
 // Internal
-const { c, getPackageJSON, handleStreamError, log } = require( '../util' );
+const { c, getFileData, getPackageJSON, handleStreamError, log } = require( '../util' );
 
 module.exports = {
 	task: ( gulp, { src }, registry ) => {
@@ -35,10 +33,8 @@ module.exports = {
 				filename === 'style.css' ||
 				extname( filename ).toLowerCase === '.php'
 			) {
-				return fileData( filePath, {
-					version: 'Version',
-				} ).then( ( { version } ) => {
-					return version;
+				return getFileData( filePath ).then( ( { Version } ) => {
+					return Version;
 				} );
 			}
 
