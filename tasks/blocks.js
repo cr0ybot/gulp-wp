@@ -6,6 +6,7 @@
 const { basename, dirname, extname, join } = require( 'path' );
 
 // External
+const CopyWebpackPlugin = require( 'copy-webpack-plugin' );
 const filter = require( 'gulp-filter' );
 const merge = require( 'merge-stream' );
 const jsonImporter = require( 'node-sass-json-importer' );
@@ -100,7 +101,7 @@ module.exports = {
 				},
 				plugins: [
 					new RemoveEmptyScriptsPlugin(),
-					...( wpWebpackConfig?.plugins || [] ),
+					...(( wpWebpackConfig?.plugins || [] ).filter(plugin => ! (plugin instanceof CopyWebpackPlugin))),
 				],
 				devtool: 'source-map',
 			};

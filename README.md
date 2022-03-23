@@ -92,7 +92,7 @@ project (root)
   │   ├╴*.js
   │   └╴*.js.map
   ├╴languages
-	│ └╴{textdomain}.pot
+  │ └╴{textdomain}.pot
   └╴src
     ├╴styles
     │ ├╴*.[css|scss|sass]
@@ -288,6 +288,46 @@ Default config:
 }
 ```
 
+### Blocks
+
+```shell
+gulp-wp blocks
+```
+
+This task makes developing custom Gutenberg blocks a breaze.
+
+Each block should be contained within a folder named for its base name (don't include the namespace). This folder should contain all files related to the block, but at minimum it should contain a `block.json` metadata file.
+
+Any [defined assets](https://developer.wordpress.org/block-editor/reference-guides/block-api/block-metadata/#assets) in `block.json` will be compiled, as long as it is either the same extension or an expected variation (ts, jsx, or tsx for .js files, scss or sass for .css files). Defined assets should be in the root of the block folder, paths elsewhere are not intended or tested. You can of course include other files/folders as needed, but only the defined files will be copied/compiled (with any includes) to the dist folder.
+
+You can also include an index.php file, which will be automatically copied to the dest folder.
+
+Example folder structure:
+
+```
+src/blocks/
+  ├╴my-first-block/
+  │ ├╴block.json
+  │ ├╴editor.scss
+  │ ├╴index.js
+  │ ├╴index.php
+  │ └╴style.scss
+  └╴my-second-block/
+```
+
+Default config:
+
+```javascript
+{
+	src: 'src/blocks/*/*.*',
+	srcBase: 'src/blocks', // for watch task to mirror deletions
+	watch: [ 'src/blocks/**/*.*', 'theme.json' ],
+	dest: 'dist/blocks',
+	entries: 'src/blocks/*/block.json',
+	includePaths: [ 'node_modules' ],
+},
+```
+
 ### Translate
 
 ```shell
@@ -387,6 +427,7 @@ Default config:
 		'!{gulp*,gulp**/*}', // ignore anything that starts with gulp
 	],
 	dest: '../',
+	ignoreSrc: [ 'scripts', 'styles', 'blocks' ],
 }
 ```
 
