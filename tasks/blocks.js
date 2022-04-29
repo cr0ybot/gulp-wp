@@ -122,7 +122,7 @@ module.exports = {
 					for (const key of blockAssets) {
 						if ( data.hasOwnProperty( key ) ) {
 							// Value can be string or array, ensure array for consistency.
-							if ( typeof data[key] !== 'array' ) {
+							if ( ! Array.isArray( data[key] ) ) {
 								data[key] = [ data[key] ];
 							}
 
