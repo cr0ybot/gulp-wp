@@ -33,7 +33,7 @@ const postcssConfigFiles = [
 
 module.exports = {
 	task: ( gulp, { src, dest, entries, includePaths } ) => {
-		return function styles() {
+		return function styles( done ) {
 			const sassFilter = filter( '*.s[a|c]ss', { restore: true } );
 			const filterEntries = filter( entries );
 			const filterStyles = filter( '*.[c|sa|sc]ss' );
@@ -73,14 +73,17 @@ module.exports = {
 					// Filter out non-sass files for the sass compilation step.
 					.pipe( sassFilter )
 					.pipe(
-						sass.sync( {
-							includePaths,
-							indentType: 'tab',
-							outputStype: 'expanded',
-							importer: jsonImporter( {
-								convertCase: true,
-							} ),
-						} )
+						sass
+							.sync( {
+								includePaths,
+								indentType: 'tab',
+								outputStype: 'expanded',
+								importer: jsonImporter( {
+									convertCase: true,
+								} ),
+							} )
+							// This fixes issue with watch task hanging on error.
+							.on( 'error', done )
 					)
 					// Restore any non-sass files that were previously filtered out.
 					.pipe( sassFilter.restore )

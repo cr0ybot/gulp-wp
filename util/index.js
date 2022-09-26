@@ -206,25 +206,26 @@ const getPluginFile = () => {
  */
 const handleStreamError = ( task ) => {
 	return plumber( {
-		// NOTE: can't be arrow function
+		// NOTE: can't be arrow function since we need ref to `this`!
 		errorHandler: function ( err ) {
-			// Separate simplifier message for notification
-			let notifyErr = err;
-
-			// Checks for PluginError object and reformat
-			if ( err.plugin && err.name && err.message ) {
-				notifyErr = err.message;
-				err = `${ c.red( err.name ) } in plugin "${ c.cyan(
+			// Format error message for console.
+			let consoleErr = err;
+			if ( err?.plugin && err?.name && err?.message ) {
+				consoleErr = `${ c.red( err.name ) } in plugin '${ c.cyan(
 					err.plugin
-				) }"\n${ c.red( err.message ) }`;
+				) }' (${ c.cyan( task ) })\n${ c.red( err.message ) }`;
 			}
 
-			log.error( err );
-			notify( {
+			// Log debug error to console.
+			log.debug( consoleErr );
+
+			// Notify error.
+			notify.onError( {
 				title: `Error in '${ task }' task`,
 				sound: process.env.NOTIFY || true,
-			} ).write( notifyErr );
+			} )( err );
 
+			// Keep gulp from hanging on this task.
 			this.emit( 'end' );
 		},
 	} );
