@@ -1,8 +1,8 @@
 /**
- * Gulp WP
+ * Gulp WP.
  */
 
-// Load .env file
+// Load .env file.
 const env = require( 'dotenv' ).config();
 if ( process.env.NOTIFY === 'false' ) {
 	process.env.DISABLE_NOTIFIER = true;
@@ -26,20 +26,20 @@ function init( gulp, config = {} ) {
 	const localConfig = loadConfig();
 	config = Object.assign( {}, localConfig, config );
 
-	// Add env explicitly so that it can't be set via config
+	// Add env explicitly so that it can't be set via config.
 	config.env = {
 		DEV_URL: 'http://localhost',
 		...env.parsed,
 	};
 
-	// If `plugin` not specified in config, check for style.css and then for a plugin entry point
+	// If `plugin` not specified in config, check for style.css and then for a plugin entry point.
 	if ( ! config.plugin ) {
 		if ( ! isTheme() ) {
 			config.plugin = getPluginFile();
 		}
 	}
 
-	// Load local tasks first so we can ignore tasks meant to be overridden
+	// Load local tasks first so we can ignore tasks meant to be overridden.
 	const localTaskFolder = config.taskFolder || 'gulp-wp';
 	log.debug( 'Loading local tasks from', c.blue( localTaskFolder ) );
 	const localTasks = loadTasks( localTaskFolder );
@@ -48,7 +48,7 @@ function init( gulp, config = {} ) {
 		c.cyan( Object.keys( localTasks ).join( ' ' ) )
 	);
 
-	// Load Gulp WP default tasks
+	// Load Gulp WP core tasks.
 	const gulpWPTasks = loadTasks(
 		resolve( __dirname, 'tasks' ),
 		Object.keys( localTasks )
@@ -60,14 +60,14 @@ function init( gulp, config = {} ) {
 
 	const tasks = Object.assign( {}, gulpWPTasks, localTasks );
 
-	// Register our custom registry
+	// Register our custom registry.
 	const gulpWP = new GulpWPRegistry( gulp, tasks, config );
 	gulp.registry( gulpWP );
 
 	return gulpWP;
 }
 
-// Expose GulpWPRegistry for advanced use
+// Expose GulpWPRegistry for advanced use.
 init.GulpWPRegistry = GulpWPRegistry;
 
 module.exports = init;
