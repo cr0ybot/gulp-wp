@@ -1,5 +1,5 @@
 /**
- * Task: version
+ * Task: version.
  */
 
 // Node
@@ -9,7 +9,13 @@ const { basename, dirname, extname } = require( 'path' );
 const replace = require( 'gulp-replace' );
 
 // Internal
-const { c, getFileData, getPackageJSON, handleStreamError, log } = require( '../util' );
+const {
+	c,
+	getFileData,
+	getPackageJSON,
+	handleStreamError,
+	log,
+} = require( '../util' );
 
 module.exports = {
 	task: ( gulp, { src }, registry ) => {
@@ -21,14 +27,14 @@ module.exports = {
 		function getVersion( filePath ) {
 			const filename = basename( filePath );
 
-			// Get version from package.json
+			// Get version from package.json.
 			if ( filename === 'package.json' ) {
-				// NOTE: can't just `require` package.json because successive calls will use a cached version
+				// NOTE: can't just `require` package.json because successive calls will use a cached version.
 				const { version } = getPackageJSON();
 				return Promise.resolve( version );
 			}
 
-			// Get version from file header
+			// Get version from file header.
 			if (
 				filename === 'style.css' ||
 				extname( filename ).toLowerCase === '.php'
@@ -42,8 +48,8 @@ module.exports = {
 		}
 
 		return function version() {
-			// Regular express based on filetype
-			// Note that the part used to match the version is captured for the replacement as $1
+			// Regular express based on filetype.
+			// Note that the part used to match the version is captured for the replacement as $1.
 			const regex =
 				extname( dest ).toLowerCase() === '.json'
 					? new RegExp( /("version"\s*:\s*")[^"]+/ )
@@ -52,19 +58,19 @@ module.exports = {
 							'm'
 					  );
 
-			return getVersion( src ).then( ( version ) => {
+			return getVersion( src ).then( ( newVersion ) => {
 				log.info(
 					'Copying version',
-					c.cyan( version ),
+					c.cyan( newVersion ),
 					'from',
 					c.blue( src ),
 					'to',
 					c.blue( dest )
 				);
 				return gulp
-					.src( dest ) // input file is actually dest file!
+					.src( dest ) // Input file is actually dest file!
 					.pipe( handleStreamError( 'version' ) )
-					.pipe( replace( regex, `$1${ version }` ) )
+					.pipe( replace( regex, `$1${ newVersion }` ) )
 					.pipe( gulp.dest( dirname( dest ) ) );
 			} );
 		};

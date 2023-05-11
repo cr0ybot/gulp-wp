@@ -1,9 +1,9 @@
 /**
- * Task: dev
+ * Task: dev.
  */
 
 module.exports = {
-	task: ( gulp, {}, registry ) => {
+	task: ( gulp ) => {
 		const dev = gulp.series( 'build', 'serve', 'watch' );
 
 		return dev;

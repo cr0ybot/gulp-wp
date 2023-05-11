@@ -1,7 +1,7 @@
 /**
- * Task: watch
+ * Task: watch.
  *
- * Watch project files for changes and run build tasks
+ * Watch project files for changes and run build tasks.
  */
 
 // Node
@@ -20,7 +20,7 @@ module.exports = {
 
 			return ( filepath ) => {
 				log.debug( c.cyan( task ), 'src deleted:', c.blue( filepath ) );
-				// Get the relative path of the file from it's src root
+				// Get the relative path of the file from it's src root.
 				// TODO: This does not work with globs!!!
 				const relPath = relative(
 					resolve( taskConfig.srcBase || taskConfig.src ),
@@ -30,9 +30,9 @@ module.exports = {
 					)
 				);
 				log.debug( relPath );
-				// Put the relative path in the context of the dest root
+				// Put the relative path in the context of the dest root.
 				const destPath = resolve( taskConfig.dest, relPath );
-				// Delete the dest files
+				// Delete the dest files.
 				const delFiles = Array.isArray( mirrorDeletion )
 					? mirrorDeletion.map( ( ext ) => `${ destPath }${ ext }` )
 					: `${ destPath }${ mirrorDeletion }`;
@@ -52,7 +52,7 @@ module.exports = {
 		return function watch() {
 			for ( let task of tasks ) {
 				let mirrorDeletion = false;
-				// Handle object task config
+				// Handle object task config.
 				if (
 					typeof task === 'object' &&
 					task.hasOwnProperty( 'task' )

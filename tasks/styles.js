@@ -23,6 +23,7 @@ const {
 	log,
 } = require( '../util' );
 
+// Possible postcss config file names.
 const postcssConfigFiles = [
 	'.postcssrc',
 	'.postcssrc.json',
@@ -38,9 +39,9 @@ module.exports = {
 			const filterEntries = filter( entries );
 			const filterStyles = filter( '*.[c|sa|sc]ss' );
 
-			// Check for postcss config in package.json
+			// Check for postcss config in local package.json
 			const { postcss: postcssPackageConfig } = getPackageJSON();
-			// Check for postcss config file
+			// Check for postcss config file in local directory
 			const postcssFileConfig = glob.sync(
 				`@(${ postcssConfigFiles.join( '|' ) })`,
 				{ dot: true }
@@ -66,9 +67,9 @@ module.exports = {
 						sourcemaps: true,
 					} )
 					.pipe( handleStreamError( 'styles' ) )
-					// Transform sass glob @import
+					// Transform sass glob @import.
 					.pipe( sassGlobLegacy() )
-					// Transform sass glob @use/@forward
+					// Transform sass glob @use/@forward.
 					.pipe( sassGlob() )
 					// Filter out non-sass files for the sass compilation step.
 					.pipe( sassFilter )
@@ -112,7 +113,7 @@ module.exports = {
 	},
 	config: {
 		src: 'src/styles/**/*.*',
-		srcBase: 'src/styles', // for watch task to mirror deletions
+		srcBase: 'src/styles', // For watch task to mirror deletions.
 		watch: [ 'src/styles/**/*.*', 'theme.json' ],
 		dest: 'dist/css',
 		entries: 'src/styles/*.*',
