@@ -1,7 +1,7 @@
 /**
- * Task: serve
+ * Task: serve.
  *
- * Proxy your WordPress install to inject style changes and reload scripts & PHP via BrowserSync
+ * Proxy your WordPress install to inject style changes and reload scripts & PHP via BrowserSync.
  */
 
 // External
@@ -50,7 +50,7 @@ module.exports = {
 				`${ styles.dest }/**/*.php`,
 			],
 			open,
-			// Conditionally add bs env config
+			// Conditionally add BrowserSync env config.
 			...( BROWSERSYNC_BROWSER && {
 				browser: JSON.parse( BROWSERSYNC_BROWSER ),
 			} ),

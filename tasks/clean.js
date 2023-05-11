@@ -1,7 +1,7 @@
 /**
- * Task: clean
+ * Task: clean.
  *
- * Clean build folders
+ * Cleans build folders.
  */
 
 // External

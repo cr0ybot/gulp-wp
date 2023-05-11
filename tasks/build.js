@@ -1,5 +1,5 @@
 /**
- * Task: build
+ * Task: build.
  */
 
 module.exports = {
@@ -9,8 +9,7 @@ module.exports = {
 			preBuild: preBuildTasks,
 			build: buildTasks,
 			postBuild: postBuildTasks,
-		},
-		registry
+		}
 	) => {
 		function maybeParallel( tasks ) {
 			if ( ! Array.isArray( tasks ) || tasks.length === 0 ) {
@@ -20,7 +19,7 @@ module.exports = {
 			return [ gulp.parallel( ...tasks ) ];
 		}
 
-		// Build main series array conditionally
+		// Build main series array conditionally.
 		const buildSeries = [
 			...maybeParallel( preBuildTasks ),
 			...maybeParallel( buildTasks ),

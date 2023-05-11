@@ -1,5 +1,5 @@
 /**
- * Task: blocks
+ * Task: blocks.
  */
 
 // Node
@@ -18,7 +18,7 @@ const RemoveEmptyScriptsPlugin = require( 'webpack-remove-empty-scripts' );
 const webpackStream = require( 'webpack-stream' );
 const wpWebpackConfig = require( '@wordpress/scripts/config/webpack.config' );
 
-// GulpWP
+// Internal
 const { c, changed, handleStreamError, log, logFiles } = require( '../util' );
 
 const blockAssets = [

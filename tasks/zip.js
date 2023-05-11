@@ -1,5 +1,5 @@
 /**
- * Task: zip
+ * Task: zip.
  *
  * Creates a production-ready zip archive of your project that ignores source
  * files and other non-production files.
@@ -52,14 +52,14 @@ module.exports = {
 	},
 	config: {
 		src: [
-			'**/*', // all project files
-			'!**/.*', // ignore dotfiles
-			'!**/_*', // ignore partial files
-			'!{node_modules,node_modules/**/*}', // ignore node_modules
-			'!{package.json,package-lock.json,yarn.lock}', // ignore npm/yarn files
-			'!{gulp*,gulp**/*}', // ignore anything that starts with gulp
+			'**/*', // All project files.
+			'!**/.*', // Ignore dotfiles.
+			'!**/_*', // Ignore partial files.
+			'!{node_modules,node_modules/**/*}', // Ignore node_modules.
+			'!{package.json,package-lock.json,yarn.lock}', // Ignore npm/yarn files.
+			'!{gulp*,gulp**/*}', // Ignore anything that starts with "gulp".
 		],
-		dest: '../',
+		dest: '../', // Output to parent folder (dangerous?).
 		ignoreSrc: [ 'scripts', 'styles', 'blocks' ],
 	},
 	dependencies: ( { ignoreSrc = [] } ) => [ ...ignoreSrc, 'build' ],

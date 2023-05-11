@@ -1,5 +1,5 @@
 /**
- * Task: scripts
+ * Task: scripts.
  */
 
 // External
@@ -21,7 +21,7 @@ const {
 
 module.exports = {
 	task: ( gulp, { src, dest, entries, includePaths } ) => {
-		return function scripts( done ) {
+		return function scripts() {
 			const filterEntries = filter( entries );
 
 			const webpackConfig = {
@@ -35,8 +35,8 @@ module.exports = {
 				},
 				devtool: 'source-map',
 			};
-			// Remove config props that may interfere with webpackStream
-			delete webpackConfig[ 'entry' ];
+			// Remove config props that may interfere with webpackStream.
+			delete webpackConfig.entry;
 
 			return (
 				gulp
@@ -63,7 +63,7 @@ module.exports = {
 	},
 	config: {
 		src: 'src/scripts/**/*.*',
-		srcBase: 'src/scripts', // for watch task to mirror deletions
+		srcBase: 'src/scripts', // For watch task to mirror deletions.
 		dest: 'dist/js',
 		entries: 'src/scripts/*.*',
 		includePaths: [ 'node_modules' ],

@@ -1,5 +1,5 @@
 /**
- * Task: translate
+ * Task: translate.
  */
 
 // Node
@@ -10,18 +10,25 @@ const sort = require( 'gulp-sort' );
 const wpPot = require( 'gulp-wp-pot' );
 
 // Internal
-const { c, getFileData, handleStreamError, log, logFiles } = require( '../util' );
+const {
+	c,
+	getFileData,
+	handleStreamError,
+	log,
+	logFiles,
+} = require( '../util' );
 
 module.exports = {
 	task: ( gulp, { src, dest }, registry ) => {
 		return function translate() {
 			const { plugin } = registry.config;
 			const metadataFile = plugin !== undefined ? plugin : 'style.css';
-			const packageName = plugin !== undefined ? 'Plugin Name' : 'Theme Name';
+			const packageType =
+				plugin !== undefined ? 'Plugin Name' : 'Theme Name';
 
 			return getFileData( metadataFile )
 				.catch( ( err ) => {
-					console.log(err);
+					log.error( err );
 					log.warn(
 						c.yellow(
 							'No metadata file found. Make sure you have a'
@@ -38,8 +45,11 @@ module.exports = {
 					return {};
 				} )
 				.then( ( data ) => {
-					const { ['Text Domain']: domain, [packageName]: package } = data;
-					// Add metadataFile to src array
+					const {
+						'Text Domain': domain,
+						[ packageType ]: packageName,
+					} = data;
+					// Add metadataFile to src array.
 					if ( metadataFile ) {
 						if ( Array.isArray( src ) ) {
 							src.push( metadataFile );
@@ -48,15 +58,15 @@ module.exports = {
 						}
 					}
 
-					if ( ! package ) {
+					if ( ! packageName ) {
 						log.warn(
-							c.cyan( packageName ),
+							c.cyan( packageType ),
 							c.yellow( 'not found.' )
 						);
 					} else {
 						log.info(
-							`${ c.cyan( packageName ) }:`,
-							c.magenta( package )
+							`${ c.cyan( packageType ) }:`,
+							c.magenta( packageName )
 						);
 					}
 
@@ -79,10 +89,10 @@ module.exports = {
 						.pipe( handleStreamError( 'styles' ) )
 						.pipe( sort() )
 						.pipe(
-							// TODO: wpPot config options
+							// TODO: wpPot config options.
 							wpPot( {
 								domain,
-								package,
+								package: packageName,
 								//bugReport: 'https://example.com',
 								//lastTranslator: 'Your Name Here <you@example.com>',
 								//team: 'Team Name Here <team@example.com>',
