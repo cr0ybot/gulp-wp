@@ -1,5 +1,5 @@
 /**
- * Util
+ * Utilities.
  */
 
 // Node
@@ -49,12 +49,12 @@ const assetFile = ( ignoreGlob = false ) => {
 			return cb( null, file );
 		}
 
-		// Generate md5 hash from file contents
+		// Generate md5 hash from file contents.
 		const md5 = createHash( 'md5' );
 		md5.update( file.contents, 'utf8' );
 		const hash = md5.digest( 'hex' ).slice( 0, 32 );
 
-		// Gather originating file info
+		// Gather originating file info.
 		const base = dirname( file.path );
 		const assetName = `${ parse( basename( file.path ) ).name }.asset.php`;
 		const path = join( base, assetName );
@@ -62,7 +62,7 @@ const assetFile = ( ignoreGlob = false ) => {
 			`<?php return array('version' => '${ hash }', 'dependencies' => array());`
 		);
 		log.debug( 'asset file:', c.blue( path ) );
-		// Create php file with md5 hash as version
+		// Create php file with md5 hash as version.
 		const asset = new Vinyl( {
 			base,
 			path,
@@ -79,11 +79,11 @@ const assetFile = ( ignoreGlob = false ) => {
  * Filter out files that haven't changed since timestamp in a stream.
  *
  * Generally, you should pass gulp.lastRun( taskFn ) as the timestamp.
- * Based on a shortcoming of the gulp.src `since` option: https://github.com/gulpjs/vinyl-fs/issues/226
+ * Based on a shortcoming of the gulp.src `since` option: @see https://github.com/gulpjs/vinyl-fs/issues/226
  *
  * @function
- * @param {number} timestamp Timestamp to check against file modification/creation times
- * @param {string|string[]} includeGlob Glob to include regardless of file timestamp
+ * @param {number}          timestamp   Timestamp to check against file modification/creation times.
+ * @param {string|string[]} includeGlob Glob to include regardless of file timestamp.
  */
 const changed = ( timestamp, includeGlob = false ) => {
 	function filterChanged( file, enc, cb ) {
@@ -117,22 +117,24 @@ const changed = ( timestamp, includeGlob = false ) => {
 /**
  * Global config used for all "instances" of gulp-dependents, because the first that runs sets the config for all.
  *
- * Custom JS parser: https://stackoverflow.com/a/66748484/900971
+ * Custom JS parser: @see https://stackoverflow.com/a/66748484/900971
  */
-const jsPostfixes = [ '.js', '.jsx', '.ts', '.tsx', '.mjs', '.cjs' ];
+const jsPostfixes = [ 'js', 'jsx', 'ts', 'tsx', 'mjs', 'cjs' ];
 const jsDependentsConfig = {
-	postfixes: jsPostfixes,
+	postfixes: jsPostfixes.map( ( ext ) => `.${ ext }` ),
 	parserSteps: [
 		/(?:import|export)(?:["'\s]*(?:[\w*${}\n\r\t, ]+)from\s*)?["'\s]*(.*[@\w_-]+)["'\s].*;?$/gm,
 		function ( path ) {
-			// Remove file extension, if any
-			// TODO: insert postfixes dynamically?
-			path = path.replace( /\.[js|jsx|ts|tsx|mjs|cjs]$/, '' );
+			// Remove file extension, if any.
+			path = path.replace(
+				new RegExp( `\\.[${ jsPostfixes.join( '|' ) }]$` ),
+				''
+			);
 
-			// Local packages
-			paths = [ path, `${ path }/index` ];
+			// Local packages.
+			path = [ path, `${ path }/index` ];
 
-			return paths;
+			return path;
 		},
 	],
 	basePath: [ 'node_modules' ],
@@ -149,14 +151,14 @@ for ( const ext of jsPostfixes ) {
 /**
  * Get WP file header data.
  *
- * @returns {object} File header data
+ * @return {Object} File header data.
  */
 const getFileData = promisify( wpGetFileData.getFileData );
 
 /**
- * Get the contents of package.json
+ * Get the contents of package.json.
  *
- * @returns {object} Contents of package.json
+ * @return {Object} Contents of package.json.
  */
 const getPackageJSON = () => {
 	// NOTE: can't just `require` package.json because successive calls will use a cached version
@@ -167,12 +169,12 @@ const getPackageJSON = () => {
  * Attempts to locate the main plugin file similar to how WordPress does, with a little extra help from `glob`.
  *
  * @function
- * @returns {string} Plugin file path
+ * @return {string} Plugin file path.
  */
 const getPluginFile = () => {
-	// get all php files in the root of the cwd
+	// Get all php files in the root of the cwd.
 	const pluginFilePaths = glob( './*.php' );
-	// for each file, check the first 8192 bytes for "Plugin Name"
+	// For each file, check the first 8192 bytes for "Plugin Name".
 	log.debug( 'Looking for main plugin file...' );
 	for ( const path of pluginFilePaths ) {
 		try {
@@ -201,13 +203,14 @@ const getPluginFile = () => {
 /**
  * Handle stream errors without stopping the entire workflow.
  *
+ * @param {string} task Task name.
  * @function
- * @returns {stream}
+ * @return {NodeJS.ReadWriteStream} Stream.
  */
 const handleStreamError = ( task ) => {
 	return plumber( {
 		// NOTE: can't be arrow function since we need ref to `this`!
-		errorHandler: function ( err ) {
+		errorHandler( err ) {
 			// Format error message for console.
 			let consoleErr = err;
 			if ( err?.plugin && err?.name && err?.message ) {
@@ -235,7 +238,7 @@ const handleStreamError = ( task ) => {
  * Stop handling stream errors.
  *
  * @function
- * @returns {function}
+ * @return {NodeJS.ReadWriteStream} Stream.
  */
 handleStreamError.stop = () => {
 	return plumber.stop();
@@ -245,7 +248,7 @@ handleStreamError.stop = () => {
  * Checks if style.css exists.
  *
  * @function
- * @returns {boolean}
+ * @return {boolean} True if style.css exists.
  */
 const isTheme = () => {
 	try {
@@ -259,10 +262,10 @@ const isTheme = () => {
 };
 
 /**
- * Load local config file if it exists
+ * Load local config file if it exists.
  *
  * @function
- * @returns {object} Config object
+ * @return {Object} Config object.
  */
 const loadConfig = () => {
 	const configPath = join( cwd(), 'gulp-wp.config.js' );
@@ -279,11 +282,10 @@ const loadConfig = () => {
 /**
  * Load tasks files from a directory.
  *
- * TODO: second parameter for ignore tasks array so that we can load local tasks first and skip loading the equivalent Gulp WP task
- *
  * @function
- * @param {string} dirPath Path to tasks folder
- * @returns {object} Object with tasks as properties
+ * @param {string}   dirPath Path to tasks folder.
+ * @param {string[]} ignore  Array of task names to ignore.
+ * @return {Object} Object with tasks as properties.
  */
 const loadTasks = ( dirPath, ignore = [] ) => {
 	if ( typeof dirPath !== 'string' ) {
@@ -297,14 +299,14 @@ const loadTasks = ( dirPath, ignore = [] ) => {
 	return taskFiles.reduce( ( acc, file ) => {
 		const taskName = basename( file, '.js' );
 
-		// Skip if found in ignore list
+		// Skip if found in ignore list.
 		if ( ignore.includes( taskName ) ) {
 			return acc;
 		}
 
 		const taskInfo = require( resolve( dirPath, taskName ) );
 
-		// Validate task function exists
+		// Validate task function exists.
 		if (
 			taskInfo.hasOwnProperty( 'task' ) &&
 			typeof taskInfo.task === 'function'
@@ -321,7 +323,12 @@ const loadTasks = ( dirPath, ignore = [] ) => {
 };
 
 /**
- * File logging utility
+ * File logging utility.
+ *
+ * @param {Object} options          Options object.
+ * @param {string} options.logLevel Log level.
+ * @param {string} options.task     Task name.
+ * @param {string} options.title    Title to prepend to log.
  */
 const logFiles = ( options ) => {
 	const { logLevel = 'info', task, title: desc } = options;
