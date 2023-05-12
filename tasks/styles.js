@@ -4,7 +4,7 @@
 
 // External
 const autoprefixer = require( 'autoprefixer' );
-const cleanCSS = require( 'gulp-clean-css' );
+const cleanCSS = require( '@aptuitiv/gulp-clean-css' );
 const filter = require( 'gulp-filter' );
 const glob = require( 'glob' );
 const postcss = require( 'gulp-postcss' );
@@ -78,7 +78,7 @@ module.exports = {
 							.sync( {
 								includePaths,
 								indentType: 'tab',
-								outputStype: 'expanded',
+								outputStyle: 'expanded',
 								importer: jsonImporter( {
 									convertCase: true,
 								} ),

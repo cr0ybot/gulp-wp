@@ -43,6 +43,7 @@
 	},
 	"scripts": {},
 	"dependencies": {
+		"@aptuitiv/gulp-clean-css": "^4.4.3",
 		"@martin-pettersson/wp-get-file-data": "^0.1.1",
 		"@wordpress/scripts": "^26.4.0",
 		"ansi-colors": "^4.1.3",
@@ -57,7 +58,6 @@
 		"dotenv": "^16.0.3",
 		"glob": "^10.2.3",
 		"gulp": "^4.0.2",
-		"gulp-clean-css": "^4.3.0",
 		"gulp-debug": "^4.0.0",
 		"gulp-dedupe": "github:hoho/gulp-dedupe#468dabc327b8f450cdafe5f2cab457a1293b9057",
 		"gulp-dependents": "^1.2.5",
