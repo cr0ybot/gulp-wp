@@ -64,7 +64,8 @@ const assetFile = ( ignoreGlob = false ) => {
 		log.debug( 'asset file:', c.blue( path ) );
 		// Create php file with md5 hash as version.
 		const asset = new Vinyl( {
-			base,
+			cwd: file.cwd,
+			base: file.base, // Fix for gulp.dest() placing asset files in root instead of at relative path.
 			path,
 			contents,
 		} );
