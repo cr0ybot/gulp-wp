@@ -3,7 +3,7 @@
  */
 
 // Node
-const { basename, dirname, extname, join } = require( 'path' );
+const { basename, dirname, extname, join, relative } = require( 'path' );
 
 // External
 const CopyWebpackPlugin = require( 'copy-webpack-plugin' );
@@ -104,6 +104,7 @@ module.exports = {
 				},
 				plugins: [
 					new RemoveEmptyScriptsPlugin(),
+					// Remove the default CopyWebpackPlugin which interferes with our custom json and php handling.
 					...( wpWebpackConfig?.plugins || [] ).filter(
 						( plugin ) => ! ( plugin instanceof CopyWebpackPlugin )
 					),

@@ -3,6 +3,7 @@
  */
 
 // External
+const CopyWebpackPlugin = require( 'copy-webpack-plugin' );
 const dedupe = require( 'gulp-dedupe' );
 const dependents = require( 'gulp-dependents' );
 const named = require( 'vinyl-named' );
@@ -33,6 +34,12 @@ module.exports = {
 						...includePaths,
 					],
 				},
+				plugins: [
+					// Remove the default CopyWebpackPlugin which will grab errant json and php files.
+					...( wpWebpackConfig?.plugins || [] ).filter(
+						( plugin ) => ! ( plugin instanceof CopyWebpackPlugin )
+					),
+				],
 				devtool: 'source-map',
 			};
 			// Remove config props that may interfere with webpackStream.
