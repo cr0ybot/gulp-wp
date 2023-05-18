@@ -12,7 +12,7 @@ const {
 	readFileSync,
 	readSync,
 } = require( 'fs' );
-const { basename, dirname, join, parse, resolve } = require( 'path' );
+const { basename, dirname, join, parse, resolve, relative } = require( 'path' );
 const { cwd } = require( 'process' );
 const { promisify } = require( 'util' );
 
@@ -45,7 +45,10 @@ const assetFile = ( ignoreGlob = false ) => {
 				ignoreGlob.map( ( g ) => toAbsGlob( g, { cwd: file.cwd } ) )
 			)
 		) {
-			log.debug( 'asset file: ignoring', c.blue( file.path ) );
+			log.debug(
+				'asset file: ignoring',
+				c.blue( relative( file.cwd, file.path ) )
+			);
 			return cb( null, file );
 		}
 
@@ -61,7 +64,7 @@ const assetFile = ( ignoreGlob = false ) => {
 		const contents = Buffer.from(
 			`<?php return array('version' => '${ hash }', 'dependencies' => array());`
 		);
-		log.debug( 'asset file:', c.blue( path ) );
+		log.debug( 'asset file:', c.blue( relative( file.cwd, path ) ) );
 		// Create php file with md5 hash as version.
 		const asset = new Vinyl( {
 			cwd: file.cwd,
