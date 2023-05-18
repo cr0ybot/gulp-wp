@@ -72,7 +72,7 @@
 		"gulp-sort": "^2.0.0",
 		"gulp-wp-pot": "^2.5.0",
 		"gulp-zip": "^5.1.0",
-		"gulplog": "^2.0.1",
+		"gulplog": "^1.0.0",
 		"merge-stream": "^2.0.0",
 		"micromatch": "^4.0.5",
 		"node-sass-json-importer": "^4.3.0",
