@@ -120,7 +120,11 @@ module.exports = {
 			 */
 			const streamBlockAssets = through2.obj(
 				function filterBlockAssetEntries( file, enc, cb ) {
-					log.debug( file.path );
+					log.info(
+						`${ c.cyan( 'blocks' ) } processing meta: ${ c.blue(
+							relative( file.cwd, file.path )
+						) }`
+					);
 					// Parse block.json for asset files.
 					const data = JSON.parse( file.contents.toString() );
 					if ( data ) {
