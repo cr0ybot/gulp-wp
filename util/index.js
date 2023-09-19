@@ -149,7 +149,7 @@ const dependentsConfig = {
 	},
 };
 for ( const ext of jsPostfixes ) {
-	dependentsConfig[ ext ] = jsDependentsConfig;
+	dependentsConfig[ `.${ ext }` ] = jsDependentsConfig;
 }
 
 /**
