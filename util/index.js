@@ -218,9 +218,13 @@ const handleStreamError = ( task ) => {
 			// Format error message for console.
 			let consoleErr = err;
 			if ( err?.plugin && err?.name && err?.message ) {
-				consoleErr = `${ c.red( err.name ) } in plugin '${ c.cyan(
-					err.plugin
-				) }' (${ c.cyan( task ) })\n${ c.red( err.message ) }`;
+				consoleErr = `${ c.cyan( task ) }: ${ c.red(
+					err.name
+				) } in plugin '${ c.cyan( err.plugin ) }'\n${ c.red(
+					err.message
+				) }`;
+			} else if ( typeof err === 'string' ) {
+				consoleErr = `${ c.cyan( task ) }: ${ c.red( err ) }`;
 			}
 
 			// Log debug error to console.

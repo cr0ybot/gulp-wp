@@ -86,7 +86,7 @@ module.exports = {
 
 					return gulp
 						.src( src )
-						.pipe( handleStreamError( 'styles' ) )
+						.pipe( handleStreamError( 'translate' ) )
 						.pipe( sort() )
 						.pipe(
 							// TODO: wpPot config options.
@@ -120,7 +120,7 @@ module.exports = {
 	config: {
 		src: [
 			'**/*.php',
-			'dist/**/*.{js,php}',
+			//'dist/**/*.js', // TODO: wp-pot must be run separately for JS.
 			'!node_modules/**/*',
 			'!**/*.asset.php',
 			'!src/**/*',
