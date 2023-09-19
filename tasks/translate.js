@@ -86,7 +86,7 @@ module.exports = {
 
 					return gulp
 						.src( src )
-						.pipe( handleStreamError( 'styles' ) )
+						.pipe( handleStreamError( 'translate' ) )
 						.pipe( sort() )
 						.pipe(
 							// TODO: wpPot config options.
