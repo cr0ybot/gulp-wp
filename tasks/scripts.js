@@ -2,6 +2,8 @@
  * Task: scripts.
  */
 
+const { extname } = require( 'path' );
+
 // External
 const CopyWebpackPlugin = require( 'copy-webpack-plugin' );
 const dedupe = require( 'gulp-dedupe' );
@@ -61,7 +63,14 @@ module.exports = {
 					.pipe( filterEntries )
 					.pipe( logFiles( { task: 'scripts', title: 'entry:' } ) )
 					// Convert into named entrypoints for WebPack.
-					.pipe( named() )
+					.pipe(
+						named( ( file ) => {
+							// Remove the glob base (everything before '*') and extension but keep the relative path.
+							return file.path
+								.replace( file.base, '' )
+								.replace( extname( file.path ), '' );
+						} )
+					)
 					// TODO: webpack errors are displayed twice.
 					.pipe( webpackStream( webpackConfig, webpack ) )
 					.pipe( gulp.dest( dest ) )
