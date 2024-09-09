@@ -102,7 +102,14 @@ module.exports = {
 					// Optimize CSS with cleanCSS level 2.
 					.pipe(
 						cleanCSS( {
-							level: 2,
+							level: {
+								1: {
+									tidySelectors: false, // Fix for https://github.com/clean-css/clean-css/issues/1246
+								},
+								2: {
+									all: true,
+								},
+							},
 						} )
 					)
 					// Generate *.asset.php file similar to what is provided by wp-scripts.
